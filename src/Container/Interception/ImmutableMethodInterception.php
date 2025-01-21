@@ -10,8 +10,8 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Interception;
 
-use Vivarium\Assertion\Hierarchy\IsAssignableTo;
 use Vivarium\Assertion\Object\HasMethod;
+use Vivarium\Assertion\Type\IsAssignableTo;
 use Vivarium\Container\Container;
 
 final class ImmutableMethodInterception extends BaseMethodInterception

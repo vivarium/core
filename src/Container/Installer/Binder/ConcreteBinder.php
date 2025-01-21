@@ -10,10 +10,8 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Installer;
 
-use Vivarium\Assertion\Conditional\All;
-use Vivarium\Assertion\Hierarchy\IsAssignableTo;
 use Vivarium\Assertion\Object\HasMethod;
-use Vivarium\Assertion\String\IsClassOrInterface;
+use Vivarium\Assertion\Type\IsAssignableTo;
 use Vivarium\Container\Key;
 use Vivarium\Container\Provider\Factory;
 use Vivarium\Container\Provider\Instance;

@@ -16,7 +16,7 @@ use Vivarium\Comparator\Priority;
 use Vivarium\Container\Interception\Decorator;
 use Vivarium\Container\Provider;
 
-/** 
+/**
  * @template T
  * @template K of Provider
  */
@@ -39,11 +39,11 @@ final class DecoratorBinder
 
     /** @return T */
     public function with(
-        string $class, 
-        string $parameter, 
-        callable|null $configure = null, 
-        int $priority = Priority::NORMAL)
-    {
+        string $class,
+        string $parameter,
+        callable|null $configure = null,
+        int $priority = Priority::NORMAL,
+    ) {
         $decorator = new Decorator($class, $parameter);
         if ($configure !== null) {
             $decorator = $decorator->configure($configure);

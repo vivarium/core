@@ -12,8 +12,8 @@ namespace Vivarium\Container\Solver;
 
 use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Assertion\Conditional\Either;
-use Vivarium\Assertion\String\IsClassOrInterface;
-use Vivarium\Assertion\String\IsType;
+use Vivarium\Assertion\Type\IsClassOrInterface;
+use Vivarium\Assertion\Type\IsType;
 use Vivarium\Collection\Map\HashMap;
 use Vivarium\Collection\Map\Map;
 use Vivarium\Collection\MultiMap\MultiMap;
@@ -29,8 +29,8 @@ use Vivarium\Container\Binding;
 use Vivarium\Container\Binding\Binder;
 use Vivarium\Container\Binding\ClassBinding;
 use Vivarium\Container\Binding\DecoratorBinder;
-use Vivarium\Container\Binding\ProviderBinder;
 use Vivarium\Container\Binding\InterceptionBinder;
+use Vivarium\Container\Binding\ProviderBinder;
 use Vivarium\Container\Binding\ScopeBinder;
 use Vivarium\Container\Binding\TypeBinding;
 use Vivarium\Container\Definition;
@@ -41,10 +41,12 @@ use Vivarium\Container\Provider\Cloneable;
 use Vivarium\Container\Provider\Interceptor;
 use Vivarium\Container\Provider\Prototype;
 use Vivarium\Container\Provider\Service;
-use Vivarium\Container\Scope;
 use Vivarium\Container\RecursiveProvider;
+use Vivarium\Container\Scope;
 use Vivarium\Container\Solver;
 use Vivarium\Equality\Equal;
+
+use function sprintf;
 
 final class Registry implements Solver
 {
@@ -77,8 +79,8 @@ final class Registry implements Solver
     public function bind(string $type, string $tag = Binding::DEFAULT, string $context = Binding::GLOBAL): Binder
     {
         $binding = new TypeBinding($type, $tag, $context);
-        
-        return new Binder(function (Provider $provider) use ($binding) : Registry {
+
+        return new Binder(function (Provider $provider) use ($binding): Registry {
             $registry            = clone $this;
             $registry->providers = $registry->providers->put($binding, $provider);
 
@@ -87,10 +89,10 @@ final class Registry implements Solver
     }
 
     /**
-     * @param class-string                     $class
-     * @param non-empty-string                 $tag
-     * @param non-empty-string                 $context
-     * 
+     * @param class-string     $class
+     * @param non-empty-string $tag
+     * @param non-empty-string $context
+     *
      * @return ProviderBinder<Registry,Definition>
      */
     public function define(
@@ -119,24 +121,25 @@ final class Registry implements Solver
         (new IsTrue())
             ->assert(
                 $this->providers->containsKey($binding),
-                sprintf("Binding (%s, %s, %s) does not exists.", $type, $tag, $context)
+                sprintf('Binding (%s, %s, %s) does not exists.', $type, $tag, $context),
             );
-        
+
         return new ProviderBinder(
-            $this->providers->get($binding), 
+            $this->providers->get($binding),
             function (Provider $provider) use ($binding): Registry {
-                $registry = clone $this;
+                $registry            = clone $this;
                 $registry->providers = $registry->providers->put($binding, $provider);
-                
+
                 return $registry;
-        });
+            },
+        );
     }
 
     /** @return ScopeBinder<Registry> */
     public function scope(
-        string $type, 
-        string $tag = Binding::DEFAULT, 
-        string $context = Binding::GLOBAL
+        string $type,
+        string $tag = Binding::DEFAULT,
+        string $context = Binding::GLOBAL,
     ): ScopeBinder {
         $binding = new TypeBinding($type, $tag, $context);
 
@@ -175,11 +178,10 @@ final class Registry implements Solver
 
     /** @return DecoratorBinder<Registry> */
     public function decorate(
-        string $type, 
-        string $tag = Binding::DEFAULT, 
-        string $context = Binding::GLOBAL
-    ): DecoratorBinder
-    {
+        string $type,
+        string $tag = Binding::DEFAULT,
+        string $context = Binding::GLOBAL,
+    ): DecoratorBinder {
         $binding = new ClassBinding($type, $tag, $context);
 
         return new DecoratorBinder(function (Decorator $decorator, int $priority) use ($binding): Registry {
@@ -188,8 +190,8 @@ final class Registry implements Solver
                 $binding,
                 new ValueAndPriority(
                     $decorator,
-                    $priority
-                )
+                    $priority,
+                ),
             );
 
             return $registry;
@@ -205,10 +207,11 @@ final class Registry implements Solver
 
         if ($binding->couldBeWidened()) {
             $binding = $binding->widen();
+
             return $this->hasProvider(
                 $binding->getId(),
                 $binding->getTag(),
-                $binding->getContext()
+                $binding->getContext(),
             );
         }
 
@@ -216,9 +219,9 @@ final class Registry implements Solver
     }
 
     public function hasInterceptions(
-        string $class, 
-        string $tag = Binding::DEFAULT, 
-        string $context = Binding::GLOBAL
+        string $class,
+        string $tag = Binding::DEFAULT,
+        string $context = Binding::GLOBAL,
     ): bool {
         $binding = new ClassBinding($class, $tag, $context);
         foreach ($binding->hierarchy() as $check) {
@@ -233,15 +236,16 @@ final class Registry implements Solver
     public function hasDecorator(
         string $type,
         string $tag = Binding::DEFAULT,
-        string $context = Binding::GLOBAL
+        string $context = Binding::GLOBAL,
     ) {
         $binding = new ClassBinding($type, $tag, $context);
         if ($binding->couldBeWidened()) {
             $binding = $binding->widen();
+
             return $this->hasProvider(
                 $binding->getId(),
                 $binding->getTag(),
-                $binding->getContext()
+                $binding->getContext(),
             );
         }
 
@@ -251,7 +255,7 @@ final class Registry implements Solver
     public function hasScope(string $type, string $tag = Binding::DEFAULT, string $context = Binding::GLOBAL): bool
     {
         return $this->scopes->containsKey(
-            new TypeBinding($type, $tag, $context)
+            new TypeBinding($type, $tag, $context),
         );
     }
 
@@ -335,10 +339,10 @@ final class Registry implements Solver
     {
         (new Either(
             new IsType(),
-            new IsClassOrInterface()
+            new IsClassOrInterface(),
         ))->assert($type);
 
-        return (new IsClassOrInterface)($type) ?
+        return (new IsClassOrInterface())($type) ?
             new ClassBinding($type, $tag, $context) : new TypeBinding($type, $tag, $context);
     }
 }

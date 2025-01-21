@@ -12,7 +12,6 @@ namespace Vivarium\Container\Provider;
 
 use Vivarium\Container\Binding;
 use Vivarium\Container\Container;
-use Vivarium\Container\Provider;
 use Vivarium\Container\RecursiveProvider;
 
 final class ContainerCall implements RecursiveProvider

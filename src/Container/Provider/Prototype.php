@@ -12,7 +12,7 @@ namespace Vivarium\Container\Provider;
 
 use ReflectionClass;
 use Vivarium\Assertion\Boolean\IsTrue;
-use Vivarium\Assertion\String\IsClass;
+use Vivarium\Assertion\Type\IsClass;
 use Vivarium\Collection\Map\HashMap;
 use Vivarium\Collection\Map\Map;
 use Vivarium\Collection\Queue\PriorityQueue;

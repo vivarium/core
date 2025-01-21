@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Vivarium\Container\Provider;
 
 use Psr\Container\NotFoundExceptionInterface;
-use Vivarium\Assertion\String\IsPrimitive;
+use Vivarium\Assertion\Type\IsPrimitive;
 use Vivarium\Container\Binding;
 use Vivarium\Container\Container;
-use Vivarium\Container\Provider;
 use Vivarium\Container\RecursiveProvider;
 
 use function gettype;

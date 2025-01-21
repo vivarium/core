@@ -10,8 +10,7 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Interception;
 
-use Vivarium\Assertion\Hierarchy\IsAssignableTo;
-use Vivarium\Assertion\String\IsClassOrInterface;
+use Vivarium\Assertion\Type\IsAssignableTo;
 use Vivarium\Container\Reflection\InstanceMethod;
 use Vivarium\Equality\EqualsBuilder;
 use Vivarium\Equality\HashBuilder;

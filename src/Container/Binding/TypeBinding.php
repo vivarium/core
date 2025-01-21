@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Binding;
 
-use Vivarium\Assertion\String\IsType;
+use Vivarium\Assertion\Type\IsType;
 
 final class TypeBinding extends BaseBinding
 {

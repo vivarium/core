@@ -258,7 +258,7 @@ final class PrototypeTest extends TestCase
     public function testConstructorWithInvalidClass(): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected string to be a class name. Got "NonExistingClass');
+        static::expectExceptionMessage('Expected string to be class name. Got "NonExistingClass');
 
         new Prototype('NonExistingClass');
     }

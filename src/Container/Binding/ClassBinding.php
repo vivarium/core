@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Binding;
 
-use Vivarium\Assertion\String\IsClassOrInterface;
+use Vivarium\Assertion\Type\IsClassOrInterface;
 use Vivarium\Collection\Sequence\Sequence;
 use Vivarium\Container\Binding;
 

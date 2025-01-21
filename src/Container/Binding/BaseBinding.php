@@ -12,9 +12,9 @@ namespace Vivarium\Container\Binding;
 
 use Vivarium\Assertion\Comparison\IsSameOf;
 use Vivarium\Assertion\Conditional\Either;
-use Vivarium\Assertion\String\IsClassOrInterface;
-use Vivarium\Assertion\String\IsNamespace;
 use Vivarium\Assertion\String\IsNotEmpty;
+use Vivarium\Assertion\Type\IsClassOrInterface;
+use Vivarium\Assertion\Type\IsNamespace;
 use Vivarium\Collection\Sequence\ArraySequence;
 use Vivarium\Collection\Sequence\Sequence;
 use Vivarium\Container\Binding;

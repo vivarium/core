@@ -12,11 +12,10 @@ namespace Vivarium\Container\Binding;
 
 use ReflectionFunction;
 use Vivarium\Assertion\Conditional\IsNotNull;
-use Vivarium\Assertion\Hierarchy\IsAssignableTo;
+use Vivarium\Assertion\Type\IsAssignableTo;
 use Vivarium\Container\Provider;
-use Vivarium\Container\Provider\Prototype;
 
-/** 
+/**
  * @template T
  * @template K of Provider
  */
@@ -25,7 +24,7 @@ final class ProviderBinder
     /** @var callable(K):T */
     private $create;
 
-    /** 
+    /**
      * @param K             $provider
      * @param callable(K):T $create
      */
@@ -44,16 +43,16 @@ final class ProviderBinder
     }
 
     /**
-     * @template J of K
-     * 
      * @param callable(J):J
-     *  
-     * @return T 
+     *
+     * @return T
+     *
+     * @template J of K
      */
     public function as(callable $configure)
     {
         return ($this->create)(
-            $configure($this->provider)
+            $configure($this->provider),
         );
     }
 }

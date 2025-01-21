@@ -13,13 +13,14 @@ namespace Vivarium\Container\Binding;
 use ReflectionFunction;
 use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Assertion\Conditional\IsNotNull;
-use Vivarium\Assertion\String\IsClassOrInterface;
-use Vivarium\Assertion\String\IsType;
+use Vivarium\Assertion\Type\IsType;
 use Vivarium\Comparator\Priority;
 use Vivarium\Container\Interception;
 use Vivarium\Container\Interception\ImmutableMethodInterception;
 use Vivarium\Container\Interception\MutableMethodInterception;
 use Vivarium\Container\Reflection\MethodCall;
+
+use function sprintf;
 
 /** @template T */
 final class InterceptionBinder
@@ -79,10 +80,10 @@ final class InterceptionBinder
             ->assert(
                 $interception->accept($this->type),
                 sprintf(
-                    'Interception %s cannot accept type %s', 
+                    'Interception %s cannot accept type %s',
                     $interception::class,
-                    $this->type
-                )
+                    $this->type,
+                ),
             );
 
         return ($this->create)($interception, $priority);

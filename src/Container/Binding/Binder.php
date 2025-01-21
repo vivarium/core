@@ -12,8 +12,8 @@ namespace Vivarium\Container\Binding;
 
 use ReflectionFunction;
 use Vivarium\Assertion\Conditional\IsNotNull;
-use Vivarium\Assertion\String\IsClass;
-use Vivarium\Assertion\String\IsType;
+use Vivarium\Assertion\Type\IsClass;
+use Vivarium\Assertion\Type\IsType;
 use Vivarium\Container\Binding;
 use Vivarium\Container\Provider;
 use Vivarium\Container\Provider\ContainerCall;

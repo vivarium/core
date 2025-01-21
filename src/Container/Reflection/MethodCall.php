@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Vivarium\Container\Reflection;
 
 use ReflectionClass;
-use Vivarium\Assertion\Hierarchy\IsAssignableTo;
+use Vivarium\Assertion\Type\IsAssignableTo;
 use Vivarium\Container\Container;
 
 final class MethodCall extends BaseMethod implements InstanceMethod
