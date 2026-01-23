@@ -77,6 +77,7 @@ final class IsAssignableToPrimitiveTest extends TestCase
             [StubClass::class, 'string'],
             [StubClass::class, 'object'],
             [StubClassExtension::class, 'callable'],
+            ['callable', 'callable']
         ];
     }
 
