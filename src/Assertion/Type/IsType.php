@@ -44,8 +44,11 @@ final class IsType implements Assertion
         return (new Either(
             new IsBasicType(),
             new Either(
-                new IsUnion(),
-                new IsIntersection(),
+                new IsNullable(),
+                new Either(
+                    new IsIntersection(),
+                    new IsUnion(),
+                ),
             ),
         ))($value);
     }
