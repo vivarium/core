@@ -46,18 +46,6 @@ final class IsPrimitive implements Assertion
         (new IsString())
             ->assert($value);
 
-        return (new IsOneOf([
-            'int',
-            'integer',
-            'float',
-            'double',
-            'string',
-            'bool',
-            'boolean',
-            'array',
-            'callable',
-            'object',
-            'bool',
-        ]))($value);
+        return (new IsOneOf(Type::expanded()))($value);
     }
 }
