@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Vivarium\Assertion\Object;
 
+use ReflectionClass;
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Conditional\Either;
 use Vivarium\Assertion\Exception\AssertionFailed;
@@ -16,7 +17,7 @@ use function method_exists;
 use function sprintf;
 
 /** @template-implements Assertion<class-string|object> */
-final class HasMethod implements Assertion
+final class HasPublicMethod implements Assertion
 {
     public function __construct(private string $method)
     {
@@ -28,7 +29,7 @@ final class HasMethod implements Assertion
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
-                    $message : 'Expected %s to have a method named %2$s.',
+                    $message : 'Expected %s to have a public method named %2$s.',
                 Type::toLiteral($value),
                 Type::toLiteral($this->method),
             );
@@ -45,12 +46,14 @@ final class HasMethod implements Assertion
             new IsObject(),
         ))->assert($value, 'Value must be either class, interface or object. Got %s');
 
-        return (new Either(
-            new HasPublicMethod($this->method),
-            new Either(
-                new HasProtectedMethod($this->method),
-                new HasPrivateMethod($this->method)
-            )
-        ))($value);
+        $reflector = new ReflectionClass($value);
+
+        if ($this->method === '__construct') {
+            return $reflector->isInstantiable();
+        }
+
+        return 
+            $reflector->hasMethod($this->method) &&
+            $reflector->getMethod($this->method)->isPublic();
     }
 }

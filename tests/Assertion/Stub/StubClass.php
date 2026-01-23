@@ -18,4 +18,16 @@ class StubClass implements Stub
     {
         return 'StubClass';
     }
+
+    public function publicMethod(): void
+    {
+    }
+
+    protected function protectedMethod(): void
+    {
+    }
+
+    private function privateMethod(): void
+    {
+    }
 }

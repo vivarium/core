@@ -5,13 +5,14 @@ declare(strict_types=1);
 namespace Vivarium\Test\Assertion\Object;
 
 use PHPUnit\Framework\TestCase;
-use stdClass;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Object\HasMethod;
+use Vivarium\Assertion\Object\HasProtectedMethod;
+use Vivarium\Test\Assertion\Stub\PrivateConstructorStub;
+use Vivarium\Test\Assertion\Stub\ProtectedConstructorStub;
 use Vivarium\Test\Assertion\Stub\StubClass;
 
-/** @coversDefaultClass \Vivarium\Assertion\Object\HasMethod */
-final class HasMethodTest extends TestCase
+/** @coversDefaultClass \Vivarium\Assertion\Object\HasProtectedMethod */
+final class HasProtectedMethodTest extends TestCase
 {
     /**
      * @covers ::__construct()
@@ -22,7 +23,7 @@ final class HasMethodTest extends TestCase
     {
         static::expectNotToPerformAssertions();
 
-        (new HasMethod($method))
+        (new HasProtectedMethod($method))
             ->assert($class);
     }
 
@@ -37,7 +38,7 @@ final class HasMethodTest extends TestCase
         static::expectException(AssertionFailed::class);
         static::expectExceptionMessage($message);
 
-        (new HasMethod($method))
+        (new HasProtectedMethod($method))
             ->assert($class);
     }
 
@@ -49,7 +50,7 @@ final class HasMethodTest extends TestCase
     public function testInvoke(string|object $class, string $method): void
     {
         static::assertTrue(
-            (new HasMethod($method))($class),
+            (new HasProtectedMethod($method))($class),
         );
     }
 
@@ -61,7 +62,7 @@ final class HasMethodTest extends TestCase
     public function testInvokeFailure(string|object $class, string $method): void
     {
         static::assertFalse(
-            (new HasMethod($method))($class),
+            (new HasProtectedMethod($method))($class),
         );
     }
 
@@ -69,14 +70,9 @@ final class HasMethodTest extends TestCase
     public static function provideSuccess(): array
     {
         return [
-            [StubClass::class, '__toString'],
-            [new StubClass(), '__toString'],
-            [StubClass::class, 'publicMethod'],
-            [new StubClass(), 'publicMethod'],
             [StubClass::class, 'protectedMethod'],
             [new StubClass(), 'protectedMethod'],
-            [StubClass::class, 'privateMethod'],
-            [new StubClass(), 'privateMethod'],
+            [ProtectedConstructorStub::class, '__construct'],
         ];
     }
 
@@ -84,7 +80,11 @@ final class HasMethodTest extends TestCase
     public static function provideFailure(): array
     {
         return [
-            [stdClass::class, '__toString', 'Expected "stdClass" to have a method named "__toString".'],
+            [StubClass::class, 'publicMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "publicMethod".'],
+            [StubClass::class, 'privateMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "privateMethod".'],
+            [StubClass::class, 'nonExistentMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "nonExistentMethod".'],
+            [StubClass::class, '__construct', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "__construct".'],
+            [PrivateConstructorStub::class, '__construct', 'Expected "Vivarium\Test\Assertion\Stub\PrivateConstructorStub" to have a protected method named "__construct".'],
         ];
     }
 
@@ -92,7 +92,7 @@ final class HasMethodTest extends TestCase
     public static function provideInvalid(): array
     {
         return [
-            ['RandomString', '__toString', 'Value must be either class, interface or object. Got "RandomString"'],
+            ['RandomString', 'protectedMethod', 'Value must be either class, interface or object. Got "RandomString"'],
         ];
     }
 }
