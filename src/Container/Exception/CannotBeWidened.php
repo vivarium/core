@@ -1,39 +1,19 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
- * Copyright (c) 2023 Luca Cantoreggi
+ * Copyright (c) 2025 Luca Cantoreggi
  */
+
+declare(strict_types=1);
 
 namespace Vivarium\Container\Exception;
 
+use Psr\Container\ContainerExceptionInterface;
 use RuntimeException;
-use Throwable;
-use Vivarium\Container\Binding;
 
-use function sprintf;
-
-final class CannotBeWidened extends RuntimeException
+final class CannotBeWidened extends RuntimeException implements ContainerExceptionInterface
 {
-    public function __construct(private Binding $binding, int $code = 0, Throwable|null $previous = null)
-    {
-        parent::__construct(
-            sprintf(
-                'Binding with id %s, context %s and tag %s cannot be widened.',
-                $binding->getId(),
-                $binding->getContext(),
-                $binding->getTag(),
-            ),
-            $code,
-            $previous,
-        );
-    }
 
-    public function getBinding(): Binding
-    {
-        return $this->binding;
-    }
 }

@@ -5,45 +5,53 @@ declare(strict_types=1);
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
- * Copyright (c) 2023 Luca Cantoreggi
+ * Copyright (c) 2025 Luca Cantoreggi
  */
 
 namespace Vivarium\Container\Provider;
 
+use ReflectionClass;
+use RuntimeException;
+use Vivarium\Assertion\Object\HasMethod;
+use Vivarium\Collection\Set\HashSet;
+use Vivarium\Collection\Set\Set;
 use Vivarium\Container\Binding;
-use Vivarium\Container\Container;
+use Vivarium\Container\Capability;
 use Vivarium\Container\Provider;
-use Vivarium\Container\Reflection\CreationalMethod;
-use Vivarium\Container\Reflection\FactoryMethodCall;
+use Vivarium\Container\Container;
 
 final class Factory implements Provider
 {
-    private CreationalMethod $method;
-
     public function __construct(
-        string $class,
-        string $method,
-        string $tag = Binding::DEFAULT,
-        string $context = Binding::GLOBAL,
-    ) {
-        $this->method = new FactoryMethodCall(
-            $class,
-            $method,
-            $tag,
-            $context,
-        );
-    }
-
-    public function configure(callable $configure): self
+        private Binding $factory,
+        private string $method
+    )
     {
-        $factory         = clone $this;
-        $factory->method = $configure($factory->method);
-
-        return $factory;
+        (new HasMethod($method))
+            ->assert($factory->getType());
     }
 
     public function provide(Container $container): mixed
     {
-        return $this->method->invoke($container);
+        $factory = $container->get($this->factory);
+
+        throw new RuntimeException("Not implemented yet.");
+    }
+
+    public function getTarget(): string
+    {
+        $type = (new ReflectionClass($this->factory->getType()))
+            ->getMethod($this->method)
+            ->getReturnType();
+
+        return $type === NULL ? 'mixed' : $$type->getName();
+    }
+
+    public function getCapabilities(): Set
+    {
+        return HashSet::fromArray([
+            Capability::INTERCEPTABLE,
+            Capability::DECORABLE
+        ]);
     }
 }

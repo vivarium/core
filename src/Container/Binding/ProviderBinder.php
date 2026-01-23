@@ -1,38 +1,45 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
- * Copyright (c) 2023 Luca Cantoreggi
+ * Copyright (c) 2025 Luca Cantoreggi
  */
+
+declare(strict_types=1);
 
 namespace Vivarium\Container\Binding;
 
-use ReflectionFunction;
+use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Assertion\Conditional\IsNotNull;
 use Vivarium\Assertion\Type\IsAssignableTo;
+use Vivarium\Container\Binding;
 use Vivarium\Container\Provider;
+use Vivarium\Container\Provider\Constant;
+use Vivarium\Container\Provider\Constructor;
+use Vivarium\Container\Provider\ContainerCall;
+use Vivarium\Container\Provider\Factory;
+use Vivarium\Container\Provider\StaticFactory;
+use Vivarium\Container\Provider\Instance;
+use Vivarium\Container\Provider\Enum;
+
+use \ReflectionFunction;
 
 /**
- * @template T
- * @template K of Provider
+ * @template T of Bindable
  */
 final class ProviderBinder
 {
-    /** @var callable(K):T */
+    /** @var callable (Binding, Provider):T */
     private $create;
 
-    /**
-     * @param K             $provider
-     * @param callable(K):T $create
-     */
-    public function __construct(private $provider, callable $create)
-    {
-        (new IsAssignableTo(Provider::class))
-            ->assert($provider::class);
+    private Binding $source;
 
+    /** 
+     * @param callable(Binding, Provider):T $name
+     */
+    public function __construct(callable $create, Binding $source)
+    {
         (new IsNotNull())
             ->assert(
                 (new ReflectionFunction($create))->getReturnType(),
@@ -40,19 +47,135 @@ final class ProviderBinder
             );
 
         $this->create = $create;
+        $this->source = $source;
     }
 
     /**
-     * @param callable(J):J
-     *
      * @return T
-     *
-     * @template J of K
      */
-    public function as(callable $configure)
+    public function to(
+        string $id,
+        string $tag = Binding::DEFAULT,
+        string $context = Binding::GLOBAL,)
+    {
+        (new IsAssignableTo($this->source->getId()))
+            ->assert($id);
+
+        return $this->toProvider(
+            new ContainerCall(
+                new Binding($id, $tag, $context)
+            )
+        );
+    }
+    
+    /**
+     * @return ScopeBinder<T>
+     */
+    public function toConstructor() : ScopeBinder
+    {
+        return $this
+            ->toProvider(
+                new Constructor()
+            )
+            ->scope(
+                $this->source
+            );
+    }
+
+    /**
+     * @return MethodBinder<T>
+     */    
+    public function toFactory(
+        string $class,
+        string $tag = Binding::DEFAULT,
+        string $context = Binding::GLOBAL,
+    ): MethodBinder {
+        $binding = new Binding($class, $tag, $context);
+
+        return new MethodBinder(function (string $method, callable $configure) use ($binding) {
+            return $this->toProvider(
+                $configure(
+                    new Factory(
+                        $binding,
+                        $method
+                    )
+                )
+            );
+        });
+    }
+
+    /**
+     * @return MethodBinder<T>
+     */    
+    public function toStaticFactory(
+        string $class,
+        string $tag = Binding::DEFAULT,
+        string $context = Binding::GLOBAL,
+    ): MethodBinder {
+        $binding = new Binding($class, $tag, $context);
+
+        return new MethodBinder(function (string $method, callable $configure) use ($binding) {
+            return $this->toProvider(
+                $configure(
+                    new StaticFactory(
+                        $binding,
+                        $method
+                    )
+                )
+            );
+        });
+    }
+
+    /**
+     * @return T
+     */
+    public function toInstance(mixed $instance)
+    {
+        (new IsNotNull())
+            ->assert($instance);
+            
+        (new IsAssignableTo($this->source->getId()))
+            ->assert($instance);
+
+        return $this->toProvider(
+            new Instance($instance)
+        );
+    }
+
+    /**
+     * @return T
+     */
+    public function toConstant(string $constant)
+    {
+        (new IsTrue())
+            ->assert(defined($constant));
+
+        return $this->toProvider(
+            new Constant($constant)
+        );
+    }
+
+    /** 
+     * @return T
+     */
+    public function toEnum(string $enum)
+    {
+        (new IsTrue())
+            ->assert(\enum_exists($enum));
+
+        return $this->toProvider(
+            new Enum($enum)
+        );
+    }
+
+    /** 
+     * @return T
+     */
+    public function toProvider(Provider $provider) : mixed
     {
         return ($this->create)(
-            $configure($this->provider),
+            $this->source,
+            $provider
         );
     }
 }

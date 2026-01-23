@@ -10,37 +10,42 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Provider;
 
+use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
+use Vivarium\Container\Binding;
 use Vivarium\Container\Capability;
 use Vivarium\Container\Provider;
 use Vivarium\Container\Container;
 
-use function gettype;
+use function defined;
 
-final class Instance implements Provider
+final class Constant implements Provider
 {
-    private mixed $instance;
-
-    public function __construct(mixed $instance)
+    public function __construct(private string $name)
     {
-        $this->instance = $instance;
+        (new IsTrue())
+            ->assert(defined($name));
     }
 
     public function provide(Container $container): mixed
     {
-        return $this->instance;
+        return (new ReflectionConstant($this->name))
+            ->getValue();
     }
 
     public function getTarget(): string
     {
-        return gettype($this->instance);
+        return gettype(
+            (new ReflectionConstant($this->name))
+                ->getValue()
+        );
     }
 
     public function getCapabilities(): Set
     {
         return HashSet::fromArray([
-            Capability::DECORABLE
+            Capability::INJECTABLE
         ]);
     }
 }

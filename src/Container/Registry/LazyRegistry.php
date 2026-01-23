@@ -10,9 +10,7 @@ declare(strict_types=1);
 
 namespace Vivarium\Container;
 
-enum Scope
+final class LazyRegistry implements Registry
 {
-    case SERVICE;
-    case CLONEABLE;
-    case TRANSIENT;
+
 }

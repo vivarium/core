@@ -1,26 +1,30 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
- * Copyright (c) 2023 Luca Cantoreggi
+ * Copyright (c) 2025 Luca Cantoreggi
  */
+
+declare(strict_types=1);
 
 namespace Vivarium\Container\Binding;
 
-use ReflectionFunction;
 use Vivarium\Assertion\Conditional\IsNotNull;
 use Vivarium\Container\Scope;
+use \ReflectionFunction;
 
-/** @template T */
+/**
+ * @template T
+ */
 final class ScopeBinder
 {
-    /** @var callable(Scope):T */
+    /** @var callable (Scope):T */
     private $create;
 
-    /** @param callable(Scope): T $create */
+    /** 
+     * @param callable(Scope):T $name
+     */
     public function __construct(callable $create)
     {
         (new IsNotNull())
@@ -33,20 +37,20 @@ final class ScopeBinder
     }
 
     /** @return T */
-    public function service()
+    public function transient()
     {
-        return ($this->create)(Scope::SERVICE);
+        return ($this->create)(Scope::TRANSIENT);
     }
 
     /** @return T */
-    public function cloneable()
+    public function clonable()
     {
         return ($this->create)(Scope::CLONEABLE);
     }
 
     /** @return T */
-    public function transient()
+    public function service()
     {
-        return ($this->create)(Scope::TRANSIENT);
+        return ($this->create)(Scope::SERVICE);
     }
 }

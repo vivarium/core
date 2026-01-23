@@ -5,16 +5,14 @@ declare(strict_types=1);
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
- * Copyright (c) 2023 Luca Cantoreggi
+ * Copyright (c) 2025 Luca Cantoreggi
  */
 
 namespace Vivarium\Container;
 
-use Psr\Container\ContainerInterface;
-
-interface Container extends ContainerInterface
+interface Container
 {
-    public function get(string|Binding $request): mixed;
+    public function get(Binding $binding);
 
-    public function has(string|Binding $request): bool;
+    public function has(Binding $binding);
 }

@@ -1,18 +1,18 @@
 <?php
 
-declare(strict_types=1);
-
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
  * Copyright (c) 2025 Luca Cantoreggi
  */
 
+declare(strict_types=1);
+
 namespace Vivarium\Container;
 
-enum Scope
+enum Capability
 {
-    case SERVICE;
-    case CLONEABLE;
-    case TRANSIENT;
+    case INJECTABLE;
+    case INTERCEPTABLE;
+    case DECORABLE;
 }

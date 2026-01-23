@@ -5,18 +5,14 @@ declare(strict_types=1);
 /*
  * This file is part of Vivarium
  * SPDX-License-Identifier: MIT
- * Copyright (c) 2023 Luca Cantoreggi
+ * Copyright (c) 2025 Luca Cantoreggi
  */
 
 namespace Vivarium\Container;
 
-/** @template T of Solver */
+use Vivarium\Container\Binding\Binder;
+
 interface Module
 {
-    /**
-     * @param T $solver
-     *
-     * @return T
-     */
-    public function install($solver);
+    public function configure(Binder $binder) : Binder;
 }
