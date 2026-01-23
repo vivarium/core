@@ -48,8 +48,12 @@ final class IsAssignableToPrimitive implements Assertion
         (new IsBasicType())
             ->assert($value);
 
+        if ($this->primitive === Type::MIXED) {
+            return true;
+        }
+
         if ((new IsPrimitive())($value)) {
-            if ($this->primitive === 'float' && $value === 'int') {
+            if ($this->primitive === Type::FLOAT && $value === Type::INT) {
                 return true;
             }
 
@@ -58,16 +62,16 @@ final class IsAssignableToPrimitive implements Assertion
 
         /** @psalm-var class-string $value */
 
-        if ($this->primitive === 'object') {
+        if ($this->primitive === Type::OBJECT) {
             return true;
         }
 
-        if ($this->primitive === 'string') {
+        if ($this->primitive === Type::STRING) {
             return (new ReflectionClass($value))
                 ->hasMethod('__toString');
         }
 
-        if ($this->primitive === 'callable') {
+        if ($this->primitive === Type::CALLABLE) {
             return (new ReflectionClass($value))
                 ->hasMethod('__invoke');
         }
