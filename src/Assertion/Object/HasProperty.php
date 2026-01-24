@@ -43,6 +43,12 @@ final class HasProperty implements Assertion
             new IsObject(),
         ))->assert($value, 'Value must be either class, interface or object. Got %s');
 
-        return property_exists($value, $this->property);
+        return (new Either(
+            new HasPublicProperty($this->property),
+            new Either(
+                new HasProtectedProperty($this->property),
+                new HasPrivateProperty($this->property),
+            ),
+        ))($value);
     }
 }
