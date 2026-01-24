@@ -12,7 +12,6 @@ use Vivarium\Assertion\Type\IsClassOrInterface;
 use Vivarium\Assertion\Var\IsObject;
 use Vivarium\Type\Type;
 
-use function method_exists;
 use function sprintf;
 
 /** @template-implements Assertion<class-string|object> */
@@ -49,8 +48,8 @@ final class HasMethod implements Assertion
             new HasPublicMethod($this->method),
             new Either(
                 new HasProtectedMethod($this->method),
-                new HasPrivateMethod($this->method)
-            )
+                new HasPrivateMethod($this->method),
+            ),
         ))($value);
     }
 }

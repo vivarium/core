@@ -56,8 +56,7 @@ final class HasProtectedMethod implements Assertion
             return $constructor->isProtected();
         }
 
-        return 
-            $reflector->hasMethod($this->method) &&
-            $reflector->getMethod($this->method)->isProtected();
+        return $reflector->hasMethod($this->method) 
+            && $reflector->getMethod($this->method)->isProtected();
     }
 }

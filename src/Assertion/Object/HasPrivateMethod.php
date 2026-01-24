@@ -56,8 +56,7 @@ final class HasPrivateMethod implements Assertion
             return $constructor->isPrivate();
         }
 
-        return 
-            $reflector->hasMethod($this->method) &&
-            $reflector->getMethod($this->method)->isPrivate();
+        return $reflector->hasMethod($this->method)
+            && $reflector->getMethod($this->method)->isPrivate();
     }
 }

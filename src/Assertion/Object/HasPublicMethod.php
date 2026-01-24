@@ -13,7 +13,6 @@ use Vivarium\Assertion\Type\IsClassOrInterface;
 use Vivarium\Assertion\Var\IsObject;
 use Vivarium\Type\Type;
 
-use function method_exists;
 use function sprintf;
 
 /** @template-implements Assertion<class-string|object> */
@@ -52,8 +51,7 @@ final class HasPublicMethod implements Assertion
             return $reflector->isInstantiable();
         }
 
-        return 
-            $reflector->hasMethod($this->method) &&
-            $reflector->getMethod($this->method)->isPublic();
+        return $reflector->hasMethod($this->method) 
+            && $reflector->getMethod($this->method)->isPublic();
     }
 }
