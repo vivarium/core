@@ -12,6 +12,7 @@ namespace Vivarium\Test\Assertion\Type;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;
+use Traversable;
 use Vivarium\Assertion\Exception\AssertionFailed;
 use Vivarium\Assertion\Type\IsNullable;
 
@@ -115,6 +116,14 @@ final class IsNullableTest extends TestCase
             [
                 'string|int',
                 'Expected string to be a nullable type (starting with ?). Got "string|int".',
+            ],
+            [
+                '?string|int',
+                'Expected string to be a nullable type (starting with ?). Got "?string|int".',
+            ],
+            [
+                '?' . stdClass::class . '&' . Traversable::class,
+                'Expected string to be a nullable type (starting with ?). Got "?stdClass&Traversable".',
             ],
         ];
     }

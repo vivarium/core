@@ -66,14 +66,6 @@ final class IsAssignableToNullable implements Assertion
     /** @return Assertion<non-empty-string>|Assertion<class-string> */
     private function getAssertion(string $type): Assertion
     {
-        if ((new IsUnion())($type)) {
-            return new IsAssignableToUnion($type);
-        }
-
-        if ((new IsIntersection())($type)) {
-            return new IsAssignableToIntersection($type);
-        }
-
         if ((new IsClassOrInterface())($type)) {
             /** @psalm-var class-string $type */
             return new IsAssignableToClass($type);
