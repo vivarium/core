@@ -51,7 +51,7 @@ final class HasPublicMethod implements Assertion
             return $reflector->isInstantiable();
         }
 
-        return $reflector->hasMethod($this->method) 
+        return $reflector->hasMethod($this->method)
             && $reflector->getMethod($this->method)->isPublic();
     }
 }

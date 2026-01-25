@@ -77,9 +77,21 @@ final class HasProtectedPropertyTest extends TestCase
     public static function provideFailure(): array
     {
         return [
-            [StubClass::class, 'prop', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected property named "prop".'],
-            [StubClass::class, 'privateProp', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected property named "privateProp".'],
-            [StubClass::class, 'nonExistentProp', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected property named "nonExistentProp".'],
+            [
+                StubClass::class,
+                'prop',
+                'Expected "' . StubClass::class . '" to have a protected property named "prop".',
+            ],
+            [
+                StubClass::class,
+                'privateProp',
+                'Expected "' . StubClass::class . '" to have a protected property named "privateProp".',
+            ],
+            [
+                StubClass::class,
+                'nonExistentProp',
+                'Expected "' . StubClass::class . '" to have a protected property named "nonExistentProp".',
+            ],
         ];
     }
 
@@ -87,7 +99,11 @@ final class HasProtectedPropertyTest extends TestCase
     public static function provideInvalid(): array
     {
         return [
-            ['RandomString', 'protectedProp', 'Value must be either class, interface or object. Got "RandomString"'],
+            [
+                'RandomString',
+                'protectedProp',
+                'Value must be either class, interface or object. Got "RandomString"',
+            ],
         ];
     }
 }

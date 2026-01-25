@@ -80,11 +80,31 @@ final class HasProtectedMethodTest extends TestCase
     public static function provideFailure(): array
     {
         return [
-            [StubClass::class, 'publicMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "publicMethod".'],
-            [StubClass::class, 'privateMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "privateMethod".'],
-            [StubClass::class, 'nonExistentMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "nonExistentMethod".'],
-            [StubClass::class, '__construct', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a protected method named "__construct".'],
-            [PrivateConstructorStub::class, '__construct', 'Expected "Vivarium\Test\Assertion\Stub\PrivateConstructorStub" to have a protected method named "__construct".'],
+            [
+                StubClass::class,
+                'publicMethod',
+                'Expected "' . StubClass::class . '" to have a protected method named "publicMethod".',
+            ],
+            [
+                StubClass::class,
+                'privateMethod',
+                'Expected "' . StubClass::class . '" to have a protected method named "privateMethod".',
+            ],
+            [
+                StubClass::class,
+                'nonExistentMethod',
+                'Expected "' . StubClass::class . '" to have a protected method named "nonExistentMethod".',
+            ],
+            [
+                StubClass::class,
+                '__construct',
+                'Expected "' . StubClass::class . '" to have a protected method named "__construct".',
+            ],
+            [
+                PrivateConstructorStub::class,
+                '__construct',
+                'Expected "' . PrivateConstructorStub::class . '" to have a protected method named "__construct".',
+            ],
         ];
     }
 
@@ -92,7 +112,11 @@ final class HasProtectedMethodTest extends TestCase
     public static function provideInvalid(): array
     {
         return [
-            ['RandomString', 'protectedMethod', 'Value must be either class, interface or object. Got "RandomString"'],
+            [
+                'RandomString',
+                'protectedMethod',
+                'Value must be either class, interface or object. Got "RandomString"',
+            ],
         ];
     }
 }

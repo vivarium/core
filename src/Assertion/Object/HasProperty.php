@@ -12,7 +12,6 @@ use Vivarium\Assertion\Type\IsClassOrInterface;
 use Vivarium\Assertion\Var\IsObject;
 use Vivarium\Type\Type;
 
-use function property_exists;
 use function sprintf;
 
 /** @template-implements Assertion<class-string|object> */

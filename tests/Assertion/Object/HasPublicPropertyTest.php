@@ -77,9 +77,21 @@ final class HasPublicPropertyTest extends TestCase
     public static function provideFailure(): array
     {
         return [
-            [StubClass::class, 'protectedProp', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public property named "protectedProp".'],
-            [StubClass::class, 'privateProp', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public property named "privateProp".'],
-            [StubClass::class, 'nonExistentProp', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public property named "nonExistentProp".'],
+            [
+                StubClass::class,
+                'protectedProp',
+                'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public property named "protectedProp".',
+            ],
+            [
+                StubClass::class,
+                'privateProp',
+                'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public property named "privateProp".',
+            ],
+            [
+                StubClass::class,
+                'nonExistentProp',
+                'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public property named "nonExistentProp".',
+            ],
         ];
     }
 

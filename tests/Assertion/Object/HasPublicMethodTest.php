@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Vivarium\Test\Assertion\Object;
 
 use PHPUnit\Framework\TestCase;
-use stdClass;
 use Vivarium\Assertion\Exception\AssertionFailed;
 use Vivarium\Assertion\Object\HasPublicMethod;
 use Vivarium\Test\Assertion\Stub\PrivateConstructorStub;
@@ -82,11 +81,31 @@ final class HasPublicMethodTest extends TestCase
     public static function provideFailure(): array
     {
         return [
-            [StubClass::class, 'protectedMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public method named "protectedMethod".'],
-            [StubClass::class, 'privateMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public method named "privateMethod".'],
-            [StubClass::class, 'nonExistentMethod', 'Expected "Vivarium\Test\Assertion\Stub\StubClass" to have a public method named "nonExistentMethod".'],
-            [ProtectedConstructorStub::class, '__construct', 'Expected "Vivarium\Test\Assertion\Stub\ProtectedConstructorStub" to have a public method named "__construct".'],
-            [PrivateConstructorStub::class, '__construct', 'Expected "Vivarium\Test\Assertion\Stub\PrivateConstructorStub" to have a public method named "__construct".'],
+            [
+                StubClass::class,
+                'protectedMethod',
+                'Expected "' . StubClass::class . '" to have a public method named "protectedMethod".',
+            ],
+            [
+                StubClass::class,
+                'privateMethod',
+                'Expected "' . StubClass::class . '" to have a public method named "privateMethod".',
+            ],
+            [
+                StubClass::class,
+                'nonExistentMethod',
+                'Expected "' . StubClass::class . '" to have a public method named "nonExistentMethod".',
+            ],
+            [
+                ProtectedConstructorStub::class,
+                '__construct',
+                'Expected "' . ProtectedConstructorStub::class . '" to have a public method named "__construct".',
+            ],
+            [
+                PrivateConstructorStub::class,
+                '__construct',
+                'Expected "' . PrivateConstructorStub::class . '" to have a public method named "__construct".',
+            ],
         ];
     }
 
@@ -94,7 +113,11 @@ final class HasPublicMethodTest extends TestCase
     public static function provideInvalid(): array
     {
         return [
-            ['RandomString', 'publicMethod', 'Value must be either class, interface or object. Got "RandomString"'],
+            [
+                'RandomString',
+                'publicMethod',
+                'Value must be either class, interface or object. Got "RandomString"',
+            ],
         ];
     }
 }

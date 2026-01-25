@@ -50,9 +50,7 @@ final class IsAssignableToNullableTest extends TestCase
             ->assert($type);
     }
 
-    /**
-     * @covers ::__construct()
-     */
+    /** @covers ::__construct() */
     public function testConstructorException(): void
     {
         static::expectException(AssertionFailed::class);
