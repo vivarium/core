@@ -8,31 +8,27 @@ declare(strict_types=1);
  * Copyright (c) 2025 Luca Cantoreggi
  */
 
-namespace Vivarium\Container;
+namespace Vivarium\Container\Binding;
 
 use Vivarium\Assertion\Object\HasProperty;
 use Vivarium\Assertion\Type\IsClass;
+use Vivarium\Container\Binding;
 
-final class EnhancementBinder 
+final class EnhancementBinder
 {
-    private Binding $binding;
-
-    public function __construct(Binding $binding)
+    public function __construct(private Binding $binding)
     {
-        $this->binding = $binding;
     }
 
-    public function withMethodCall(string $method)
+    public function withMethodCall(string $method): void
     {
-
     }
 
-    public function withImmutableMethodCall(string $method)
+    public function withImmutableMethodCall(string $method): void
     {
-
     }
 
-    public function withPropertySet(string $property)
+    public function withPropertySet(string $property): void
     {
         (new IsClass())
             ->assert($this->binding->getType());
