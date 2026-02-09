@@ -12,5 +12,7 @@ namespace Vivarium\Container;
 
 interface Definition
 {
-    public function solve(Container $container) : mixed;
+    public function solve(Container $container): mixed;
+
+    public function withEnhancement(Enhancement $enhancement, int $priority): self;
 }
