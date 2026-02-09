@@ -17,22 +17,24 @@ use Vivarium\Container\Capability;
 use Vivarium\Container\Container;
 use Vivarium\Container\Provider;
 
-final class ContainerCall implements Provider
+final class Fallback implements Provider
 {
-    public function __construct(private Binding $target)
-    {
+    public function __construct(
+        private Binding $primary,
+        private Binding $secondary,
+    ) {
     }
 
     public function provide(Container $container): mixed
     {
-        return $container->get(
-            $this->target,
-        );
+        return $container->has($this->primary)
+            ? $container->get($this->primary)
+            : $container->get($this->secondary);
     }
 
     public function getTarget(): string
     {
-        return $this->target->getType();
+        return $this->primary->getType() . '|' . $this->secondary->getType();
     }
 
     public function getCapabilities(): Set

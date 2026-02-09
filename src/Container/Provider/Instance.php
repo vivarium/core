@@ -13,18 +13,17 @@ namespace Vivarium\Container\Provider;
 use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
 use Vivarium\Container\Capability;
-use Vivarium\Container\Provider;
 use Vivarium\Container\Container;
+use Vivarium\Container\Provider;
+use Vivarium\Type\Type;
 
 use function gettype;
+use function is_object;
 
 final class Instance implements Provider
 {
-    private mixed $instance;
-
-    public function __construct(mixed $instance)
+    public function __construct(private mixed $instance)
     {
-        $this->instance = $instance;
     }
 
     public function provide(Container $container): mixed
@@ -34,13 +33,19 @@ final class Instance implements Provider
 
     public function getTarget(): string
     {
-        return gettype($this->instance);
+        return is_object($this->instance) ?
+            $this->instance::class : Type::normalize(gettype($this->instance));
     }
 
     public function getCapabilities(): Set
     {
-        return HashSet::fromArray([
-            Capability::DECORABLE
-        ]);
+        if (is_object($this->instance)) {
+            return HashSet::fromArray([
+                Capability::INTERCEPTABLE,
+                Capability::DECORABLE,
+            ]);
+        }
+
+        return new HashSet();
     }
 }

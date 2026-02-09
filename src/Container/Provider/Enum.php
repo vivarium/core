@@ -14,8 +14,8 @@ use ReflectionEnum;
 use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
-use Vivarium\Container\Provider;
 use Vivarium\Container\Container;
+use Vivarium\Container\Provider;
 
 use function enum_exists;
 
@@ -23,9 +23,8 @@ final class Enum implements Provider
 {
     public function __construct(
         private string $enum,
-        private string $case
-    )
-    {
+        private string $case,
+    ) {
         (new IsTrue())
             ->assert(enum_exists($enum));
 
