@@ -10,11 +10,11 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Provider;
 
-use Vivarium\Container\Provider;
 use Vivarium\Container\Binding\ArgumentBinder;
+use Vivarium\Container\Provider;
 
 interface Method extends Provider
 {
     /** @return ParameterBinder<self> */
-    public function bind(string $parameter) : ArgumentBinder;
+    public function bind(string $parameter): ArgumentBinder;
 }

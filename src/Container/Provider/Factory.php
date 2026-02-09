@@ -17,16 +17,15 @@ use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
 use Vivarium\Container\Binding;
 use Vivarium\Container\Capability;
-use Vivarium\Container\Provider;
 use Vivarium\Container\Container;
+use Vivarium\Container\Provider;
 
 final class Factory implements Provider
 {
     public function __construct(
         private Binding $factory,
-        private string $method
-    )
-    {
+        private string $method,
+    ) {
         (new HasMethod($method))
             ->assert($factory->getType());
     }
@@ -35,7 +34,7 @@ final class Factory implements Provider
     {
         $factory = $container->get($this->factory);
 
-        throw new RuntimeException("Not implemented yet.");
+        throw new RuntimeException('Not implemented yet.');
     }
 
     public function getTarget(): string
@@ -44,14 +43,14 @@ final class Factory implements Provider
             ->getMethod($this->method)
             ->getReturnType();
 
-        return $type === NULL ? 'mixed' : $$type->getName();
+        return $type === null ? 'mixed' : $$type->getName();
     }
 
     public function getCapabilities(): Set
     {
         return HashSet::fromArray([
             Capability::INTERCEPTABLE,
-            Capability::DECORABLE
+            Capability::DECORABLE,
         ]);
     }
 }
