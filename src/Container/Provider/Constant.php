@@ -10,7 +10,7 @@ declare(strict_types=1);
 
 namespace Vivarium\Container\Provider;
 
-use Vivarium\Assertion\Boolean\IsTrue;
+use Vivarium\Assertion\Var\IsConstant;
 use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
 use Vivarium\Container\Container;
@@ -18,16 +18,14 @@ use Vivarium\Container\Provider;
 use Vivarium\Type\Type;
 
 use function constant;
-use function defined;
 use function gettype;
 
 final class Constant implements Provider
 {
     public function __construct(private string $name)
     {
-        // TODO: Create HasConstant assertion for global constants
-        (new IsTrue())
-            ->assert(defined($name));
+        (new IsConstant())
+            ->assert($name);
     }
 
     public function provide(Container $container): mixed

@@ -19,6 +19,7 @@ use Vivarium\Container\Binding;
 use Vivarium\Container\Capability;
 use Vivarium\Container\Container;
 use Vivarium\Container\Provider;
+use Vivarium\Type\Type;
 
 final class Factory implements Provider
 {
@@ -43,7 +44,7 @@ final class Factory implements Provider
             ->getMethod($this->method)
             ->getReturnType();
 
-        return $type === null ? 'mixed' : $$type->getName();
+        return $type === null ? Type::MIXED : $type->getName();
     }
 
     public function getCapabilities(): Set

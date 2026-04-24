@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace Vivarium\Container\Provider;
 
 use ReflectionClass;
-use Vivarium\Assertion\Boolean\IsTrue;
+use Vivarium\Assertion\Object\HasConstant;
 use Vivarium\Assertion\Type\IsClassOrInterface;
 use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
@@ -30,11 +30,8 @@ final class ClassConstant implements Provider
         (new IsClassOrInterface())
             ->assert($class);
 
-        // TODO: Create HasConstant assertion
-        (new IsTrue())
-            ->assert(
-                (new ReflectionClass($class))->hasConstant($name),
-            );
+        (new HasConstant($name))
+            ->assert($class);
     }
 
     public function provide(Container $container): mixed

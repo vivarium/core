@@ -12,9 +12,9 @@ namespace Vivarium\Container\Provider;
 
 use Closure;
 use ReflectionFunction;
-use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Assertion\Comparison\IsEqualsTo;
 use Vivarium\Assertion\Type\IsAssignableTo;
+use Vivarium\Assertion\Var\IsFunction;
 use Vivarium\Collection\Set\HashSet;
 use Vivarium\Collection\Set\Set;
 use Vivarium\Container\Capability;
@@ -23,19 +23,14 @@ use Vivarium\Container\Provider;
 use Vivarium\Type\Type;
 
 use function count;
-use function function_exists;
-use function is_string;
 
 final class Fun implements Provider
 {
     /** @param callable(Container):mixed $fn */
     public function __construct(private Closure|string $fn)
     {
-        // TODO: Create IsFunction assertion to validate both Closure and string functions
-        if (is_string($fn)) {
-            (new IsTrue())
-                ->assert(function_exists($fn));
-        }
+        (new IsFunction())
+            ->assert($fn);
 
         $parameters = (new ReflectionFunction($fn))
             ->getParameters();
