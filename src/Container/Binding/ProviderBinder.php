@@ -12,6 +12,7 @@ namespace Vivarium\Container\Binding;
 
 use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Assertion\Conditional\IsNotNull;
+use Vivarium\Assertion\Object\IsInstanceOf;
 use Vivarium\Assertion\Type\IsAssignableTo;
 use Vivarium\Container\Binding;
 use Vivarium\Container\Provider;
@@ -58,7 +59,7 @@ final class ProviderBinder
         string $tag = Binding::DEFAULT,
         string $context = Binding::GLOBAL,)
     {
-        (new IsAssignableTo($this->source->getId()))
+        (new IsAssignableTo($this->source->getType()))
             ->assert($id);
 
         return $this->toProvider(
@@ -133,8 +134,8 @@ final class ProviderBinder
     {
         (new IsNotNull())
             ->assert($instance);
-            
-        (new IsAssignableTo($this->source->getId()))
+
+        (new IsInstanceOf($this->source->getType()))
             ->assert($instance);
 
         return $this->toProvider(

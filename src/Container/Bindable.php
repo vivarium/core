@@ -11,9 +11,10 @@ declare(strict_types=1);
 namespace Vivarium\Container;
 
 use Vivarium\Container\Binding;
-use Vivarium\Container\Binding\ProviderBinder;
-use Vivarium\Container\Binding\InterceptionBinder;
 use Vivarium\Container\Binding\DecoratorBinder;
+use Vivarium\Container\Binding\EnhancementBinder;
+use Vivarium\Container\Binding\InterceptionBinder;
+use Vivarium\Container\Binding\ProviderBinder;
 use Vivarium\Container\Binding\ScopeBinder;
 /**
  * @template T
