@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Dispatcher;
@@ -20,9 +20,7 @@ use Vivarium\Dispatcher\EventListenerProvider;
 use Vivarium\Dispatcher\Priority;
 use Vivarium\Dispatcher\StoppableEvent;
 
-/**
- * @coversDefaultClass \Vivarium\Dispatcher\AggregateDispatcher
- */
+/** @coversDefaultClass \Vivarium\Dispatcher\AggregateDispatcher */
 final class AggregateDispatcherTest extends TestCase
 {
     /**
@@ -92,7 +90,7 @@ final class AggregateDispatcherTest extends TestCase
     public function testDispatchWithNoListener(): void
     {
         $dispatcher = new AggregateDispatcher(
-            $this->createMock(EventListenerProvider::class)
+            $this->createMock(EventListenerProvider::class),
         );
 
         $event       = $this->createMock(Event::class);
@@ -127,11 +125,13 @@ final class AggregateDispatcherTest extends TestCase
         $stopper->expects(static::once())
                 ->method('handle')
                 ->with($event)
-                ->will(static::returnCallback(static function (StoppableEvent $event): StoppableEvent {
-                    $event->stopPropagation();
+                ->willReturnCallback(
+                    static function (StoppableEvent $event): StoppableEvent {
+                        $event->stopPropagation();
 
-                    return $event;
-                }));
+                        return $event;
+                    },
+                );
 
         $eventListenerMap = new EventListenerMap();
         $eventListenerMap = $eventListenerMap
@@ -171,11 +171,13 @@ final class AggregateDispatcherTest extends TestCase
         $stopper->expects(static::once())
                 ->method('handle')
                 ->with($event)
-                ->will(static::returnCallback(static function (StoppableEvent $event): StoppableEvent {
-                    $event->stopPropagation();
+                ->willReturnCallback(
+                    static function (StoppableEvent $event): StoppableEvent {
+                        $event->stopPropagation();
 
-                    return $event;
-                }));
+                        return $event;
+                    },
+                );
 
         $eventListenerMap1 = new EventListenerMap();
         $eventListenerMap2 = new EventListenerMap();

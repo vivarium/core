@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,38 +14,78 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Exception\AssertionFailed;
 use Vivarium\Assertion\String\IsEmpty;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\String\IsEmpty
- */
+/** @coversDefaultClass \Vivarium\Assertion\String\IsEmpty */
 final class IsEmptyTest extends TestCase
 {
     /**
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
      */
-    public function testAssert(): void
+    public function testAssert(string $string): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected string to be empty. Got "Hello World".');
+        static::expectNotToPerformAssertions();
 
-        (new IsEmpty())->assert('');
-        (new IsEmpty())->assert('Hello World');
+        (new IsEmpty())
+            ->assert($string);
     }
 
     /**
      * @covers ::assert()
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     * @dataProvider provideNonString()
      */
-    public function testAssertWithoutString(): void
+    public function testAssertException(string|int $string, string $message): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be string. Got integer.');
+        static::expectExceptionMessage($message);
 
-        /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
-         */
-        (new IsEmpty())->assert(42);
+        (new IsEmpty())
+            ->assert($string);
+    }
+
+    /**
+     * @covers ::assert()
+     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
+     */
+    public function testInvoke(string $string): void
+    {
+        static::assertTrue((new IsEmpty())($string));
+    }
+
+    /**
+     * @covers ::assert()
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     */
+    public function testInvokeFailure(string $string): void
+    {
+        static::assertFalse((new IsEmpty())($string));
+    }
+
+    /** @return array<array<string>> */
+    public static function provideSuccess(): array
+    {
+        return [
+            [''],
+            ['        '],
+        ];
+    }
+
+    /** @return array<array<string>> */
+    public static function provideFailure(): array
+    {
+        return [
+            ['Hello World', 'Expected string to be empty. Got "Hello World".'],
+        ];
+    }
+
+    /** @return array<array{0:int, 1:string}> */
+    public static function provideNonString(): array
+    {
+        return [
+            [42, 'Expected value to be string. Got int.'],
+        ];
     }
 }

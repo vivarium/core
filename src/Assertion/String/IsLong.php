@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -13,54 +13,42 @@ namespace Vivarium\Assertion\String;
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Encoding\IsSystemEncoding;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Helpers\TypeToString;
-use Vivarium\Assertion\Type\IsString;
+use Vivarium\Assertion\Var\IsString;
+use Vivarium\Type\Type;
 
 use function mb_strlen;
 use function sprintf;
 
-/**
- * @template-implements Assertion<string>
- * @psalm-immutable
- */
+/** @template-implements Assertion<string> */
 final class IsLong implements Assertion
 {
-    private int $length;
-
-    private string $encoding;
-
-    public function __construct(int $length, string $encoding = 'UTF-8')
+    public function __construct(private int $length, private string $encoding = 'UTF-8')
     {
-        (new IsSystemEncoding())->assert($encoding);
-
-        $this->length   = $length;
-        $this->encoding = $encoding;
+        (new IsSystemEncoding())
+            ->assert($encoding);
     }
 
-    /**
-     * @param string $value
-     *
-     * @throws AssertionFailed
-     */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert string $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
                      $message : 'Expected string to be long %3$s. Got %2$s.',
-                (new TypeToString())($value),
-                (new TypeToString())(mb_strlen($value, $this->encoding)),
-                (new TypeToString())($this->length),
+                Type::toLiteral($value),
+                Type::toLiteral(mb_strlen($value, $this->encoding)),
+                Type::toLiteral($this->length),
             );
 
             throw new AssertionFailed($message);
         }
     }
 
-    /** @param string $value */
-    public function __invoke($value): bool
+    /** @psalm-assert string $value */
+    public function __invoke(mixed $value): bool
     {
-        (new IsString())->assert($value);
+        (new IsString())
+            ->assert($value);
 
         return mb_strlen($value, $this->encoding) === $this->length;
     }

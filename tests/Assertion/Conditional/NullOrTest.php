@@ -2,8 +2,8 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -13,13 +13,11 @@ namespace Vivarium\Test\Assertion\Conditional;
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Conditional\NullOr;
-use Vivarium\Assertion\Type\IsArray;
-use Vivarium\Assertion\Type\IsInteger;
-use Vivarium\Assertion\Type\IsString;
+use Vivarium\Assertion\Var\IsArray;
+use Vivarium\Assertion\Var\IsInteger;
+use Vivarium\Assertion\Var\IsString;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\Conditional\NullOr
- */
+/** @coversDefaultClass \Vivarium\Assertion\Conditional\NullOr */
 final class NullOrTest extends TestCase
 {
     /**
@@ -28,17 +26,25 @@ final class NullOrTest extends TestCase
      */
     public function testAssert(): void
     {
-        static::expectException(InvalidArgumentException::class);
-        static::expectExceptionMessage('Expected value to be string. Got array.');
+        static::expectNotToPerformAssertions();
 
         (new NullOr(new IsString()))->assert('Hello World');
         (new NullOr(new IsString()))->assert(null);
-        (new NullOr(new IsString()))->assert([]);
     }
 
     /**
-     * @covers ::__invoke()
+     * @covers ::__construct()
+     * @covers ::assert()
      */
+    public function testAssertException(): void
+    {
+        static::expectException(InvalidArgumentException::class);
+        static::expectExceptionMessage('Expected value to be string. Got array.');
+
+        (new NullOr(new IsString()))->assert([]);
+    }
+
+    /** @covers ::__invoke() */
     public function testInvoke(): void
     {
         static::assertTrue((new NullOr(new IsInteger()))(null));

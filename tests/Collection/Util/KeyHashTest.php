@@ -4,25 +4,21 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Collection\Util;
 
 use PHPUnit\Framework\TestCase;
-use Vivarium\Test\Collection\Stub\Key;
 use Vivarium\Collection\Util\KeyHash;
 use Vivarium\Equality\HashBuilder;
+use Vivarium\Test\Collection\Stub\Key;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Util\KeyHash
- */
+/** @coversDefaultClass \Vivarium\Collection\Util\KeyHash */
 final class KeyHashTest extends TestCase
 {
-    /**
-     * @covers ::hash()
-     */
+    /** @covers ::hash() */
     public function testHash(): void
     {
         $hash = (new HashBuilder())

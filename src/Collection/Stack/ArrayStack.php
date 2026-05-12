@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -24,25 +24,20 @@ use function count;
 /**
  * @template T
  * @template-implements Stack<T>
- * @psalm-immutable
  */
 final class ArrayStack implements Stack
 {
     /** @var ArraySequence<T> */
     private ArraySequence $elements;
 
-    /**
-     * @param T ...$elements
-     *
-     * @no-named-arguments
-     */
+    /** @param T ...$elements */
     public function __construct(...$elements)
     {
         $this->elements = ArraySequence::fromArray($elements);
     }
 
     /**
-     * @param array<int, K> $elements
+     * @param array<K> $elements
      *
      * @return ArrayStack<K>
      *

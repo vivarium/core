@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Collection\MultiMap;
@@ -23,7 +23,6 @@ use function array_merge;
  * @template K
  * @template V
  * @template-implements MultiMap<K, V>
- * @psalm-immutable
  */
 final class MultiValueMap implements MultiMap
 {
@@ -41,8 +40,8 @@ final class MultiValueMap implements MultiMap
     {
         $this->factory = $factory;
 
-        /** @var Map<K, Collection<V>> $map */
         $map = new HashMap();
+
         foreach ($collections as $collection) {
             $map = $map->put(
                 $collection->getKey(),
@@ -50,6 +49,7 @@ final class MultiValueMap implements MultiMap
             );
         }
 
+        /** @psalm-var Map<K, Collection<V>> $map */
         $this->map = $map;
     }
 

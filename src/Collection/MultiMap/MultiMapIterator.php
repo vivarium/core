@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Collection\MultiMap;
@@ -22,21 +22,17 @@ use function assert;
  */
 final class MultiMapIterator implements Iterator
 {
-    /** @var Iterator<K, Collection<V>> */
-    private Iterator $mapIterator;
-
     /** @var Iterator<int, V> */
-    private ?Iterator $iterator;
+    private Iterator|null $iterator;
 
     /** @param Iterator<K, Collection<V>> $mapIterator */
-    public function __construct(Iterator $mapIterator)
+    public function __construct(private Iterator $mapIterator)
     {
-        $this->mapIterator = $mapIterator;
-        $this->iterator    = null;
+        $this->iterator = null;
     }
 
     /** @return V */
-    public function current()
+    public function current(): mixed
     {
         if ($this->iterator === null) {
             $this->iterator = $this->mapIterator->current()
@@ -65,7 +61,7 @@ final class MultiMapIterator implements Iterator
     }
 
     /** @return K */
-    public function key()
+    public function key(): mixed
     {
         return $this->mapIterator->key();
     }

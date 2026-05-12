@@ -1,17 +1,13 @@
 <?xml version="1.0"?>
 <phpunit
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
         bootstrap="vendor/autoload.php"
-        cacheResultFile="cache/phpunit/result.cache"
-        forceCoversAnnotation="true"
         colors="true"
-        verbose="true">
+        cacheDirectory="cache/phpunit/"
+        requireCoverageMetadata="true">
 
-  <coverage processUncoveredFiles="true">
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
+  <coverage>
     <report>
       <clover outputFile="tests-results/phpunit/clover.xml"/>
       <html outputDirectory="tests-results/phpunit/coverage-html"/>
@@ -23,30 +19,43 @@
     <junit outputFile="tests-results/phpunit/junit.xml"/>
   </logging>
 
+  <source>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">src/*/Exception</directory>
+    </exclude>
+  </source>
+
   <testsuites>
     <testsuite name="Assertion Tests">
       <directory>tests/Assertion</directory>
     </testsuite>
-
+    <testsuite name="Check Tests">
+      <directory>tests/Check</directory>
+    </testsuite>
     <testsuite name="Collection Tests">
       <directory>tests/Collection</directory>
     </testsuite>
-
     <testsuite name="Comparator Tests">
       <directory>tests/Comparator</directory>
     </testsuite>
-
+    <testsuite name="Container Tests">
+      <directory>tests/Container</directory>
+    </testsuite>
     <testsuite name="Dispatcher Tests">
       <directory>tests/Dispatcher</directory>
     </testsuite>
-
     <testsuite name="Equality Tests">
       <directory>tests/Equality</directory>
     </testsuite>
-
     <testsuite name="Float Tests">
       <directory>tests/Float</directory>
     </testsuite>
-
+    <testsuite name="Type Tests">
+      <directory>tests/Type</directory>
+    </testsuite>
   </testsuites>
+
 </phpunit>

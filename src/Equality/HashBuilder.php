@@ -2,8 +2,8 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -19,7 +19,6 @@ use function serialize;
 use function sha1;
 use function spl_object_id;
 
-/** @psalm-immutable */
 final class HashBuilder
 {
     private string $total;

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Dispatcher;
@@ -13,9 +13,7 @@ namespace Vivarium\Test\Dispatcher;
 use PHPUnit\Framework\TestCase;
 use Vivarium\Test\Dispatcher\Stub\StubStoppableEvent;
 
-/**
- * @coversDefaultClass \Vivarium\Dispatcher\StoppableEvent
- */
+/** @coversDefaultClass \Vivarium\Dispatcher\StoppableEvent */
 final class StoppableEventTest extends TestCase
 {
     /**

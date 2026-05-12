@@ -2,43 +2,29 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
 
 namespace Vivarium\Assertion\Conditional;
 
-use InvalidArgumentException;
-use phpDocumentor\Reflection\Types\Scalar;
 use Vivarium\Assertion\Assertion;
 
 /**
- * @template K
- * @template-implements Assertion<mixed>
+ * @template T
+ * @template-implements Assertion<T|null>
  */
 final class NullOr implements Assertion
 {
-    /** @var Assertion<K> */
-    private Assertion $assertion;
-
-    /** @param Assertion<K> $assertion */
-    public function __construct(Assertion $assertion)
+    /** @param Assertion<T> $assertion */
+    public function __construct(private Assertion $assertion)
     {
-        $this->assertion = $assertion;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @psalm-assert K|null $value
-     *
-     * @psalm-mutation-free
-     *
-     * @throws InvalidArgumentException
-     */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert T|null $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if ($value === null) {
             return;
@@ -47,14 +33,8 @@ final class NullOr implements Assertion
         $this->assertion->assert($value, $message);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @psalm-assert-if-true K|null $value
-     *
-     * @psalm-mutation-free
-     */
-    public function __invoke($value): bool
+    /** @psalm-assert-if-true T|null $value */
+    public function __invoke(mixed $value): bool
     {
         return $value === null || ($this->assertion)($value);
     }

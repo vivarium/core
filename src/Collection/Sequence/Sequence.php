@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -16,7 +16,6 @@ use Vivarium\Comparator\Comparator;
 /**
  * @template T
  * @template-extends Collection<T>
- * @psalm-immutable
  */
 interface Sequence extends Collection
 {

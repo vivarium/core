@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,52 +14,79 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Encoding\IsSystemEncoding;
 use Vivarium\Assertion\Exception\AssertionFailed;
 
-use function mb_internal_encoding;
-
-/**
- * @coversDefaultClass \Vivarium\Assertion\Encoding\IsSystemEncoding
- */
+/** @coversDefaultClass \Vivarium\Assertion\Encoding\IsSystemEncoding */
 final class IsSystemEncodingTest extends TestCase
 {
-    /**
-     * @covers ::assert()
-     * @covers ::__invoke()
-     */
-    public function testAssert(): void
-    {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('"Foo" is not a valid system encoding');
-
-        (new IsSystemEncoding())->assert('UTF-8');
-        (new IsSystemEncoding())('UTF-8');
-        (new IsSystemEncoding())->assert('Foo');
-    }
-
-    /**
-     * @covers ::__invoke()
-     */
-    public function testDefaultEncodingUntouched(): void
-    {
-        mb_internal_encoding('UTF-8');
-        static::assertTrue((new IsSystemEncoding())('ASCII'));
-        static::assertSame('UTF-8', mb_internal_encoding());
-    }
-
-    /**
-     * @covers ::assert()
-     * @covers ::__invoke()
-     */
-    public function testAssertWithoutString(): void
-    {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be string. Got integer.');
-
         /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
+         * @covers ::assert()
+         * @dataProvider provideSuccess()
          */
-        (new IsSystemEncoding())->assert(42);
+    public function testAssert(string $encoding): void
+    {
+        static::expectNotToPerformAssertions();
+
+        (new IsSystemEncoding())->assert($encoding);
+    }
+
+    /**
+     * @covers ::assert()
+     * @dataProvider provideFailure()
+     * @dataProvider provideInvalid()
+     */
+    public function testAssertException(string|int $encoding, string $message): void
+    {
+        static::expectException(AssertionFailed::class);
+        static::expectExceptionMessage($message);
+
+        (new IsSystemEncoding())->assert($encoding);
+    }
+
+    /**
+     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
+     */
+    public function testInvoke(string $encoding): void
+    {
+        static::assertTrue(
+            (new IsSystemEncoding())($encoding),
+        );
+    }
+
+    /**
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     */
+    public function testInvokeFailure(string|int $encoding): void
+    {
+        static::assertFalse(
+            (new IsSystemEncoding())($encoding),
+        );
+    }
+
+    /** @return array<array<string>> */
+    public static function provideSuccess(): array
+    {
+        return [
+            ['UTF-8'],
+            ['UTF-32'],
+            ['ASCII'],
+            ['Windows-1251'],
+        ];
+    }
+
+    /** @return array<array<string>> */
+    public static function provideFailure(): array
+    {
+        return [
+            ['Foo', '"Foo" is not a valid system encoding.'],
+        ];
+    }
+
+    /** @return array<array{0:int, 1:string}> */
+    public static function provideInvalid(): array
+    {
+        return [
+            [42, 'Expected value to be string. Got int.'],
+        ];
     }
 }

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Dispatcher;
@@ -19,9 +19,7 @@ use Vivarium\Test\Dispatcher\Stub\GenericEventListener;
 use Vivarium\Test\Dispatcher\Stub\SpecificEvent;
 use Vivarium\Test\Dispatcher\Stub\SpecificEventListener;
 
-/**
- * @coversDefaultClass \Vivarium\Dispatcher\EventListenerMap
- */
+/** @coversDefaultClass \Vivarium\Dispatcher\EventListenerMap */
 final class EventListenerMapTest extends TestCase
 {
     /**
@@ -135,22 +133,18 @@ final class EventListenerMapTest extends TestCase
         static::assertCount(2, $specificListeners);
     }
 
-    /**
-     * @covers ::subscribe()
-     */
+    /** @covers ::subscribe() */
     public function testSubscribeImmutability(): void
     {
         $eventListenerMap = new EventListenerMap();
 
         static::assertNotSame(
             $eventListenerMap,
-            $eventListenerMap->subscribe(GenericEvent::class, new GenericEventListener())
+            $eventListenerMap->subscribe(GenericEvent::class, new GenericEventListener()),
         );
     }
 
-    /**
-     * @covers ::unsubscribe()
-     */
+    /** @covers ::unsubscribe() */
     public function testUnsubscribeImmutability(): void
     {
         $eventListenerMap = new EventListenerMap();
@@ -158,7 +152,7 @@ final class EventListenerMapTest extends TestCase
 
         static::assertNotSame(
             $eventListenerMap,
-            $eventListenerMap->unsubscribe(GenericEvent::class, new GenericEventListener())
+            $eventListenerMap->unsubscribe(GenericEvent::class, new GenericEventListener()),
         );
     }
 }

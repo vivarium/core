@@ -2,34 +2,30 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
 
-namespace Vivarium\Equality\Test;
+namespace Vivarium\Test\Equality;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Vivarium\Equality\Equality;
 use Vivarium\Equality\EqualsBuilder;
+use Vivarium\Test\Equality\Stub\EqualityStub;
 
-/**
- * @coversDefaultClass \Vivarium\Equality\EqualsBuilder
- */
+/** @coversDefaultClass \Vivarium\Equality\EqualsBuilder */
 final class EqualsBuilderTest extends TestCase
 {
     /**
-     * @param mixed $first
-     * @param mixed $second
-     *
      * @covers ::__construct()
      * @covers ::append
      * @covers ::isEquals
      * @dataProvider getTestAppendScalarData
      */
-    public function testAppendScalar($first, $second, bool $expected): void
+    public function testAppendScalar(mixed $first, mixed $second, bool $expected): void
     {
         $builder = new EqualsBuilder();
         $builder = $builder->append($first, $second);
@@ -69,15 +65,12 @@ final class EqualsBuilderTest extends TestCase
     }
 
     /**
-     * @param mixed $object1
-     * @param mixed $object2
-     *
      * @covers ::append
      * @covers ::appendObject
      * @covers ::isEquals
      * @dataProvider getTestAppendObjectData
      */
-    public function testAppendObject($object1, $object2, bool $expected): void
+    public function testAppendObject(mixed $object1, mixed $object2, bool $expected): void
     {
         $builder = new EqualsBuilder();
         $builder = $builder->append($object1, $object2);
@@ -100,14 +93,11 @@ final class EqualsBuilderTest extends TestCase
     }
 
     /**
-     * @param mixed $first
-     * @param mixed $second
-     *
      * @covers ::append()
      * @covers ::isEquals()
      * @dataProvider getTestAppendMixedData
      */
-    public function testAppendDifferentTypes($first, $second): void
+    public function testAppendDifferentTypes(mixed $first, mixed $second): void
     {
         $builder = new EqualsBuilder();
         $builder = $builder->append($first, $second);
@@ -116,13 +106,10 @@ final class EqualsBuilderTest extends TestCase
     }
 
     /**
-     * @param mixed $first
-     * @param mixed $second
-     *
      * @covers ::append()
      * @dataProvider getClonePointData
      */
-    public function testImmutability($first, $second): void
+    public function testImmutability(mixed $first, mixed $second): void
     {
         $builder  = new EqualsBuilder();
         $builder1 = $builder->append($first, $second);
@@ -130,10 +117,8 @@ final class EqualsBuilderTest extends TestCase
         static::assertNotSame($builder, $builder1);
     }
 
-    /**
-     * @return array<array-key, array{0: scalar, 1: scalar, 2: bool}>
-     */
-    public function getTestAppendScalarData(): array
+    /** @return array<array-key, array{0: scalar, 1: scalar, 2: bool}> */
+    public static function getTestAppendScalarData(): array
     {
         return [
             'Integer Equality' =>
@@ -175,10 +160,8 @@ final class EqualsBuilderTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<array-key, array{0: array<mixed>, 1: array<mixed>, 2: bool}>
-     */
-    public function getTestAppendEachData(): array
+    /** @return array<array-key, array{0: array<mixed>, 1: array<mixed>, 2: bool}> */
+    public static function getTestAppendEachData(): array
     {
         return [
             'Array equality' =>
@@ -226,19 +209,10 @@ final class EqualsBuilderTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<array-key, array{0: object, 1: object, 2: bool}>
-     */
-    public function getTestAppendObjectData(): array
+    /** @return array<array-key, array{0: object, 1: object, 2: bool}> */
+    public static function getTestAppendObjectData(): array
     {
         $stdClass = new stdClass();
-
-        $equality = $this->createMock(Equality::class);
-        $equality
-            ->expects(static::once())
-            ->method('equals')
-            ->with($equality)
-            ->willReturn(true);
 
         return [
             'Object equality without EqualityInterface' =>
@@ -249,8 +223,8 @@ final class EqualsBuilderTest extends TestCase
                 ],
             'Object equality with EqualityInterface' =>
                 [
-                    $equality,
-                    $equality,
+                    new EqualityStub(),
+                    new EqualityStub(),
                     true,
                 ],
             'Object inequality without EqualityInterface' =>
@@ -262,10 +236,8 @@ final class EqualsBuilderTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<array-key, array{0: float, 1: float, 2: bool}>
-     */
-    public function getTestAppendFloatData(): array
+    /** @return array<array-key, array{0: float, 1: float, 2: bool}> */
+    public static function getTestAppendFloatData(): array
     {
         return [
             'Float Equality' =>
@@ -283,10 +255,8 @@ final class EqualsBuilderTest extends TestCase
         ];
     }
 
-    /**
-     * @return array{0: array{0: array<int>, 1: int}, 1: array{0: float, 1:string}}
-     */
-    public function getTestAppendMixedData(): array
+    /** @return array{0: array{0: array<int>, 1: int}, 1: array{0: float, 1:string}} */
+    public static function getTestAppendMixedData(): array
     {
         return [
             [
@@ -300,20 +270,13 @@ final class EqualsBuilderTest extends TestCase
         ];
     }
 
-    /**
-     * @return array{0: array<int>, 1: array<float>, 2: array<Equality>, 3: array<array<int>>}
-     */
-    public function getClonePointData(): array // phpcs:disable
+    /** @return array{0: array<int>, 1: array<float>, 2: array<Equality>, 3: array<array<int>>, 4: array<array<int>>} */
+    public static function getClonePointData(): array // phpcs:disable
     {
-        $equality = $this->createMock(Equality::class);
-        $equality->method('equals')
-                 ->with($equality)
-                 ->willReturn(true);
-
         return [
             [ 1, 5 ],
             [  0.5, 0.2 ],
-            [ $equality, $equality],
+            [ new EqualityStub(), new EqualityStub()],
             [
                 [1, 2, 4],
                 [4, 5, 6, 7],

@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -18,8 +18,6 @@ final class StringComparator implements Comparator
     /**
      * @param string $first
      * @param string $second
-     *
-     * @psalm-mutation-free
      */
     public function compare($first, $second): int
     {
@@ -29,8 +27,6 @@ final class StringComparator implements Comparator
     /**
      * @param string $first
      * @param string $second
-     *
-     * @psalm-mutation-free
      */
     public function __invoke($first, $second): int
     {

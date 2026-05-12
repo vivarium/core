@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -11,57 +11,70 @@ declare(strict_types=1);
 namespace Vivarium\Test\Assertion\Comparison;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
 use Vivarium\Assertion\Comparison\IsOneOf;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Equality\Equality;
+use Vivarium\Test\Equality\Stub\EqualityStub;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\Comparison\IsOneOf
- */
+/** @coversDefaultClass \Vivarium\Assertion\Comparison\IsOneOf */
 final class IsOneOfTest extends TestCase
 {
     /**
+     * @param array<scalar|object> $values
+     *
      * @covers ::__construct()
      * @covers ::assert()
      * @covers ::__invoke()
+     *
+     * @dataProvider provideSuccess()
      */
-    public function testAssert(): void
+    public function testAssert(mixed $value, array $values): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be one of the values provided. Got 27.');
+        static::expectNotToPerformAssertions();
 
-        $oneOf = new IsOneOf(1, 5, 7, 42);
+        $oneOf = new IsOneOf($values);
 
-        $oneOf->assert(1);
-        $oneOf->assert(5);
-        $oneOf->assert(7);
-        $oneOf->assert(42);
-
-        $oneOf->assert(27);
+        $oneOf->assert($value);
     }
 
     /**
+     * @param array<scalar|object> $values
+     *
      * @covers ::__construct()
      * @covers ::assert()
      * @covers ::__invoke()
+     *
+     * @dataProvider provideFailure()
      */
-    public function testAssertWithEquality(): void
+    public function testAssertException(mixed $value, array $values, string $message): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be one of the values provided. Got different object.');
+        static::expectExceptionMessage($message);
 
-        $element1 = $this->createMock(Equality::class);
-        $element2 = $this->createMock(Equality::class);
-        $element3 = $this->createMock(Equality::class);
-        $element4 = $this->createMock(Equality::class);
+        (new IsOneOf($values))
+            ->assert($value);
+    }
 
-        $search = $this->createMock(Equality::class);
-        $search
-            ->expects(static::exactly(4))
-            ->method('equals')
-            ->withConsecutive([$element1], [$element2], [$element3], [$element4])
-            ->willReturn(false);
+    /** @return array<array{0: scalar|object, 1:array<scalar|object>}> */
+    public static function provideSuccess(): array
+    {
+        $stdClass = new stdClass();
 
-        (new IsOneOf($element1, $element2, $element3, $element4))->assert($search);
+        return [
+            [1, [1, 5, 7, 42]],
+            [5, [1, 5, 7, 42]],
+            [7, [1, 5, 7, 42]],
+            [42, [1, 5, 7, 42]],
+            [new EqualityStub(), [new EqualityStub(), new EqualityStub()]],
+            [$stdClass, [new stdClass(), $stdClass]],
+        ];
+    }
+
+    /** @return array<array{0: int, 1:array<int>, 2:string}> */
+    public static function provideFailure(): array
+    {
+        return [
+            [27, [1, 5, 7, 42], 'Expected value to be one of the values provided. Got 27.'],
+        ];
     }
 }

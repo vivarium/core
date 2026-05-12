@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -17,9 +17,7 @@ use Vivarium\Collection\Queue\ArrayQueue;
 use Vivarium\Collection\Queue\Queue;
 use Vivarium\Equality\Equal;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Queue\ArrayQueue
- */
+/** @coversDefaultClass \Vivarium\Collection\Queue\ArrayQueue */
 class ArrayQueueTest extends TestCase
 {
     /**
@@ -41,9 +39,7 @@ class ArrayQueueTest extends TestCase
         static::assertNotSame($queue, $queue->enqueue(5));
     }
 
-    /**
-     * @covers ::add()
-     */
+    /** @covers ::add() */
     public function testAdd(): void
     {
         /** @var Queue<int> $queue */
@@ -116,9 +112,7 @@ class ArrayQueueTest extends TestCase
         static::assertEquals($expected, $queue->toArray());
     }
 
-    /**
-     * @covers ::dequeue()
-     */
+    /** @covers ::dequeue() */
     public function testDequeueOnEmpty(): void
     {
         static::expectException(DomainException::class);
@@ -129,9 +123,7 @@ class ArrayQueueTest extends TestCase
         $queue->dequeue();
     }
 
-    /**
-     * @covers ::peek()
-     */
+    /** @covers ::peek() */
     public function testPeekOnEmpty(): void
     {
         static::expectException(DomainException::class);
@@ -142,9 +134,7 @@ class ArrayQueueTest extends TestCase
         $queue->peek();
     }
 
-    /**
-     * @covers ::contains()
-     */
+    /** @covers ::contains() */
     public function testContains(): void
     {
         /** @var Queue<int> $queue */
@@ -154,9 +144,7 @@ class ArrayQueueTest extends TestCase
         static::assertFalse($queue->contains(42));
     }
 
-    /**
-     * @covers ::clear()
-     */
+    /** @covers ::clear() */
     public function testClear(): void
     {
         $queue = new ArrayQueue(1, 2, 3);
@@ -165,12 +153,11 @@ class ArrayQueueTest extends TestCase
         static::assertCount(0, $queue);
     }
 
-    /**
-     * @covers ::getIterator()
-     */
+    /** @covers ::getIterator() */
     public function testGetIterator(): void
     {
         $queue = new ArrayQueue(1, 2, 3);
+        /** @var array<int> $order */
         $order = [1, 2, 3];
 
         $index    = 0;
@@ -182,9 +169,7 @@ class ArrayQueueTest extends TestCase
         }
     }
 
-    /**
-     * @covers ::fromArray()
-     */
+    /** @covers ::fromArray() */
     public function testFromArray(): void
     {
         $values = [1, 2, 3];
@@ -195,9 +180,7 @@ class ArrayQueueTest extends TestCase
         static::assertTrue(Equal::areEquals($queue1, $queue2));
     }
 
-    /**
-     * @covers ::equals()
-     */
+    /** @covers ::equals() */
     public function testEquals(): void
     {
         $queue1 = new ArrayQueue(1, 2, 3);
@@ -210,9 +193,7 @@ class ArrayQueueTest extends TestCase
         static::assertFalse($queue1->equals(new stdClass()));
     }
 
-    /**
-     * @covers ::hash()
-     */
+    /** @covers ::hash() */
     public function testHash(): void
     {
         $queue1 = new ArrayQueue(1, 2, 3);

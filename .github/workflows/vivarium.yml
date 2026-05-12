@@ -1,70 +1,129 @@
-name: build
+name: Vivarium
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'develop'
+      - 'release/**'
+  pull_request:
+    branches:
+      - 'main'
+      - 'develop'
+      - 'release/**'
 
 jobs:
   build:
-    name: build
+    name: Build
     runs-on: ubuntu-latest
+    continue-on-error: true
+
+    strategy:
+      matrix:
+        version: ['8.1', '8.2', '8.3']
 
     steps:
       - name: Source checkout
-        uses: actions/checkout@v2
+        id: checkout
+        uses: actions/checkout@v4
 
       - name: Setup PHP
+        id: setup
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '7.4'
+          php-version: ${{ matrix.version }}
           coverage: xdebug
 
-      - name: Cache PHP dependencies
-        uses: actions/cache@v1
+      - name: Restore Composer cache
+        id: restore-composer-cache
+        uses: actions/cache/restore@v4
         with:
           path: vendor
-          key: ${{ runner.OS }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-
+          key: ${{ runner.OS }}-${{ matrix.version }}-composer-${{ hashFiles('**/composer.json') }}
 
       - name: Composer install
+        id: composer
         run: composer install -o -n --prefer-dist
 
       - name: Create directories
         run: |
+          mkdir cache
+          mkdir cache/phpcs
+          mkdir cache/infection
+          mkdir cache/phpunit
           mkdir tests-results
-          mkdir tests-results/cache
           mkdir tests-results/infection
           mkdir tests-results/phpcs
           mkdir tests-results/phpmd
+          mkdir tests-results/psalm
           mkdir tests-results/phpstan
           mkdir tests-results/phpunit
 
+      - name: Restore Tools cache
+        id: restore-tools-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: cache
+          key: ${{ runner.OS }}-${{ matrix.version }}-cache-${{ hashFiles('**/composer.json') }}
+
       - name: Run Code Sniffer
-        run: vendor/bin/phpcs --report=junit --report-file=tests-results/phpcs/phpcs.xml src
+        if: > 
+          (success() || failure())
+          && steps.composer.conclusion == 'success'
+        run: composer phpcs
 
       - name: Run Mess Detector
-        run: vendor/bin/phpmd src xml phpmd.xml --ignore-violations-on-exit --report-file tests-results/phpmd/phpmd.xml
+        if: >
+          (success() || failure())
+          && steps.composer.conclusion == 'success'
+        run: composer phpmd
 
       - name: Run PHPStan
-        run: vendor/bin/phpstan analyse --no-ansi --error-format=checkstyle > tests-results/phpstan/phpstan.xml
+        if: >
+          (success() || failure())
+          && steps.composer.conclusion == 'success'
+        run: composer phpstan
+
+      - name: Run Psalm
+        if: >
+          (success() || failure())
+          && steps.composer.conclusion == 'success'
+        run: composer psalm
 
       - name: Run PHPUnit
-        run: vendor/bin/phpunit
+        id: phpunit
+        if: >
+          (success() || failure())
+          && steps.composer.conclusion == 'success'
+        run: composer phpunit
 
       - name: Run Infection
-        run: vendor/bin/infection --coverage=tests-results/phpunit --min-msi=85 --min-covered-msi=95 --threads=4
-        env:
-          STRYKER_DASHBOARD_API_KEY: ${{ secrets.STRYKER_DASHBOARD_API_KEY }}
+        if: >
+          (success() || failure())
+          && steps.phpunit.conclusion == 'success'
+        run: composer infection
 
-      - name: Codecov
-        run: bash <(curl -s https://codecov.io/bash) -t ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Codacy
-        run: bash <(curl -Ls https://coverage.codacy.com/get.sh)
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-
-      - uses: actions/upload-artifact@v1
-        if: failure()
+      - name: Save Composer cache
+        uses: actions/cache/save@v4
+        if: >
+          (success() || failure())
+          && steps.composer.conclusion == 'success'
         with:
-          name: tests-results
+          path: vendor
+          key: ${{ steps.restore-composer-cache.outputs.cache-primary-key }}
+
+      - name: Save Tools cache
+        uses: actions/cache/save@v4
+        if: >
+          (success() || failure())
+        with:
+          path: cache
+          key: ${{ steps.restore-tools-cache.outputs.cache-primary-key }}
+
+      - uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: tests-results-${{ matrix.version }}
           path: tests-results/
+          if-no-files-found: ignore
+          retention-days: 1

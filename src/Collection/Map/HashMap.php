@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,7 +14,6 @@ use OutOfBoundsException;
 use Vivarium\Collection\Pair\Pair;
 use Vivarium\Collection\Util\KeyHash;
 use Vivarium\Collection\Util\LinearSearch;
-use Vivarium\Collection\Util\SearchAlgorithm;
 use Vivarium\Collection\Util\Vector;
 use Vivarium\Equality\Equal;
 use Vivarium\Equality\EqualsBuilder;
@@ -27,7 +26,6 @@ use function count;
  * @template K
  * @template V
  * @template-implements Map<K, V>
- * @psalm-immutable
  */
 final class HashMap implements Map
 {
@@ -259,31 +257,47 @@ final class HashMap implements Map
             ->getHashCode();
     }
 
-    /** @return SearchAlgorithm<Pair<K, V>, Pair<K, V>> */
-    private function searchByPair(): SearchAlgorithm
+    /** @return LinearSearch<Pair<K, V>, Pair<K, V>> */
+    private function searchByPair(): LinearSearch
     {
-        return new LinearSearch(
+        /*
+         * FIXME
+         * phpstan currently doesn't read dockblock above anonymous functions.
+         * It should be possible to pass the function directly to the constructor without this amount of annotations.
+         */
+
+        /** @var callable(Pair<K, V>, Pair<K, V>):bool $comparator */
+        $comparator =
             /**
              * @param Pair<K, V> $pair1
              * @param Pair<K, V> $pair2
              */
             static function (Pair $pair1, Pair $pair2): bool {
                 return Equal::areEquals($pair1->getKey(), $pair2->getKey());
-            },
-        );
+            };
+
+        return new LinearSearch($comparator);
     }
 
-    /** @return SearchAlgorithm<Pair<K, V>, K> */
-    private function searchByKey(): SearchAlgorithm
+    /** @return LinearSearch<Pair<K, V>, K> */
+    private function searchByKey(): LinearSearch
     {
-        return new LinearSearch(
+        /*
+         * FIXME
+         * phpstan currently doesn't read dockblock above anonymous functions.
+         * It should be possible to pass the function directly to the constructor without this amount of annotations.
+         */
+
+        /** @var callable(Pair<K, V>, K):bool $comparator */
+        $comparator =
             /**
              * @param Pair<K, V> $pair
              * @param K          $key
              */
             static function (Pair $pair, $key): bool {
                 return Equal::areEquals($pair->getKey(), $key);
-            },
-        );
+            };
+
+        return new LinearSearch($comparator);
     }
 }

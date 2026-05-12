@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Dispatcher\Stub;
@@ -15,34 +15,29 @@ use Vivarium\Equality\Equality;
 use Vivarium\Equality\EqualsBuilder;
 use Vivarium\Equality\HashBuilder;
 
-use function get_class;
-
 /**
- * @template-implements EventListener<SpecificEvent>
+ * @template T as SpecificEvent
+ * @template-implements EventListener<T>
  */
 final class SpecificEventListener implements EventListener, Equality
 {
     /**
-     * @param SpecificEvent $event
+     * @param T $event
+     *
+     * @return T
      */
-    public function handle($event): SpecificEvent
+    public function handle($event)
     {
         return $event;
     }
 
-    /**
-     * @psalm-mutation-free
-     */
     public function equals(object $object): bool
     {
         return (new EqualsBuilder())
-            ->append(self::class, get_class($object))
+            ->append(self::class, $object::class)
             ->isEquals();
     }
 
-    /**
-     * @psalm-mutation-free
-     */
     public function hash(): string
     {
         return (new HashBuilder())

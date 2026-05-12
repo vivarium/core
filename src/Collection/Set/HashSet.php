@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -17,12 +17,12 @@ use Vivarium\Equality\EqualsBuilder;
 use Vivarium\Equality\HashBuilder;
 
 use function array_fill;
+use function array_values;
 use function count;
 
 /**
  * @template T
  * @template-implements Set<T>
- * @psalm-immutable
  */
 final class HashSet implements Set
 {
@@ -42,17 +42,15 @@ final class HashSet implements Set
     }
 
     /**
-     * @param array<array-key, K> $elements
+     * @param array<K> $elements
      *
      * @return HashSet<K>
      *
      * @template K
-     *
-     * @psalm-pure
      */
     public static function fromArray(array $elements): HashSet
     {
-        return new HashSet(...$elements);
+        return new HashSet(...array_values($elements));
     }
 
     /** @return HashSet<T> */
@@ -68,6 +66,10 @@ final class HashSet implements Set
      */
     public function add($element): HashSet
     {
+        if ($this->contains($element)) {
+            return $this;
+        }
+
         $set      = clone $this;
         $set->map = $set->map->put($element, self::PLACEHOLDER);
 

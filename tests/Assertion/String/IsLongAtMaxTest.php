@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,87 +14,83 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Exception\AssertionFailed;
 use Vivarium\Assertion\String\IsLongAtMax;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\String\IsLongAtMax
- */
+/** @coversDefaultClass \Vivarium\Assertion\String\IsLongAtMax */
 final class IsLongAtMaxTest extends TestCase
 {
     /**
      * @covers ::__construct()
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
      */
-    public function testAssert(): void
+    public function testAssert(string $string, int $length, string $encoding): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected string to be long at max 5. Got 11');
+        static::expectNotToPerformAssertions();
 
-        (new IsLongAtMax(6))->assert('Hello');
-        (new IsLongAtMax(5))->assert('Hello');
-        (new IsLongAtMax(5))->assert('Hello World');
+        (new IsLongAtMax($length, $encoding))
+            ->assert($string);
     }
 
     /**
      * @covers ::__construct()
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     * @dataProvider provideNonValid()
      */
-    public function testIsLongAtLeastWithWrongEncoding(): void
+    public function testAssertException(string|int $string, int $length, string $encoding, string $message): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('"Foo" is not a valid system encoding.');
+        static::expectExceptionMessage($message);
 
-        (new IsLongAtMax(3, 'Foo'))->assert('Hello');
+        (new IsLongAtMax($length, $encoding))
+            ->assert($string);
     }
-
-    /**
-     * @covers ::__construct()
-     * @covers ::assert()
-     * @covers ::__invoke()
-     */
-    public function testiIsLongAtLeastWithZeroLenght(): void
-    {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected number to be greater than 0. Got 0.');
-
-        (new IsLongAtMax(0))->assert('Hello');
-    }
-
-    /**
-     * @covers ::assert()
-     */
-    public function testAssertWithoutString(): void
-    {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be string. Got integer.');
 
         /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
+         * @covers ::__construct()
+         * @covers ::__invoke()
+         * @dataProvider provideSuccess()
          */
-        (new IsLongAtMax(5))->assert(42);
+    public function testInvoke(string $string, int $length, string $encoding): void
+    {
+        static::assertTrue((new IsLongAtMax($length, $encoding))($string));
     }
 
     /**
-     * @covers ::assert()
+     * @covers ::__construct()
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
      */
-    public function testAssertWithMultibyte(): void
+    public function testInvokeFailure(string $string, int $length, string $encoding, string $message): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected string to be long at max 1. Got 2.');
-
-        (new IsLongAtMax(1, 'UTF-8'))->assert('ππ');
+        static::assertFalse((new IsLongAtMax($length, $encoding))($string));
     }
 
-    /**
-     * @covers ::assert()
-     */
-    public function testInvokeWithMultibyte(): void
+    /** @return array<array{0:string, 1:int, 2:string}> */
+    public static function provideSuccess(): array
     {
-        static::assertTrue(
-            (new IsLongAtMax(2, 'UTF-8'))('ππ')
-        );
+        return [
+            ['Hello', 6, 'UTF-8'],
+            ['Hello', 5, 'UTF-8'],
+            ['ππ', 2, 'UTF-8'],
+        ];
+    }
+
+    /** @return array<array{0:string, 1:int, 2:string, 3:string}> */
+    public static function provideFailure(): array
+    {
+        return [
+            ['Hello World', 5, 'UTF-8', 'Expected string to be long at max 5. Got 11'],
+            ['ππ', 1, 'UTF-8', 'Expected string to be long at max 1. Got 2.'],
+        ];
+    }
+
+    /** @return array<array{0:int|string, 1:int, 2:string, 3:string}> */
+    public static function provideNonValid(): array
+    {
+        return [
+            [42, 5, 'UTF-8', 'Expected value to be string. Got int.'],
+            ['Hello World', 3, 'Foo', '"Foo" is not a valid system encoding.'],
+            ['Hello World', 0, 'UTF-8', 'Expected number to be greater than 0. Got 0.'],
+        ];
     }
 }

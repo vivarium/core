@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,39 +14,79 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Exception\AssertionFailed;
 use Vivarium\Assertion\String\EndsWith;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\String\EndsWith
- */
+/** @coversDefaultClass \Vivarium\Assertion\String\EndsWith */
 class EndsWithTest extends TestCase
 {
     /**
      * @covers ::__construct()
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
      */
-    public function testAssert(): void
+    public function testAssert(string $string, string $end): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected that string "Foo Bar" ends with "d".');
+        static::expectNotToPerformAssertions();
 
-        (new EndsWith('d'))->assert('Hello World');
-        (new EndsWith('d'))->assert('Foo Bar');
+        (new EndsWith($end))
+            ->assert($string);
     }
 
     /**
+     * @covers ::__construct()
      * @covers ::assert()
+     * @dataProvider provideFailure()
+     * @dataProvider provideNonValid()
      */
-    public function testAssertWithoutString(): void
+    public function testAssertException(string|int $string, string $end, string $message): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be string. Got integer.');
+        static::expectExceptionMessage($message);
 
-        /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
-         */
-        (new EndsWith('Hello'))->assert(42);
+        (new EndsWith($end))
+            ->assert($string);
+    }
+
+    /**
+     * @covers ::__construct()
+     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
+     */
+    public function testInvoke(string $string, string $end): void
+    {
+        static::assertTrue((new EndsWith($end))($string));
+    }
+
+    /**
+     * @covers ::__construct()
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     */
+    public function testInvokeFailure(string $string, string $end): void
+    {
+        static::assertFalse((new EndsWith($end))($string));
+    }
+
+    /** @return array<array<string>> */
+    public static function provideSuccess(): array
+    {
+        return [
+            ['Hello World', 'd'],
+            ['Hello World', ' World'],
+        ];
+    }
+
+    /** @return array<array<string>> */
+    public static function provideFailure(): array
+    {
+        return [
+            ['Foo Bar', 'd', 'Expected that string "Foo Bar" ends with "d".'],
+        ];
+    }
+
+    /** @return array<array{0:int, 1:string, 2:string}> */
+    public static function provideNonValid(): array
+    {
+        return [
+            [42, 'Hello', 'Expected value to be string. Got int.'],
+        ];
     }
 }

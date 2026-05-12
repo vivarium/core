@@ -10,7 +10,7 @@
 
     <arg name="basepath" value="."/>
 
-    <config name="php_version" value="70400"/>
+    <config name="php_version" value="80000"/>
 
     <rule ref="Doctrine"/>
 

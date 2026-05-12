@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -23,7 +23,6 @@ use function count;
 /**
  * @template T
  * @template-implements Set<T>
- * @psalm-immutable
  */
 final class SortedSet implements Set
 {
@@ -34,17 +33,12 @@ final class SortedSet implements Set
     /** @var Map<T, int>*/
     private Map $map;
 
-    /** @var Comparator<T> */
-    private Comparator $comparator;
-
     /**
      * @param Comparator<T> $comparator
      * @param T             ...$elements
      */
-    public function __construct(Comparator $comparator, ...$elements)
+    public function __construct(private Comparator $comparator, ...$elements)
     {
-        $this->comparator = $comparator;
-
         $placeholders = array_fill(self::START, count($elements), self::PLACEHOLDER);
 
         $this->map = SortedMap::fromKeyValue($comparator, $elements, $placeholders);
@@ -52,13 +46,11 @@ final class SortedSet implements Set
 
     /**
      * @param Comparator<K> $comparator
-     * @param K[]           $elements
+     * @param array<K>      $elements
      *
      * @return SortedSet<K>
      *
      * @template K
-     *
-     * @psalm-pure
      */
     public static function fromArray(Comparator $comparator, array $elements): SortedSet
     {
@@ -72,6 +64,10 @@ final class SortedSet implements Set
      */
     public function add($element): SortedSet
     {
+        if ($this->contains($element)) {
+            return $this;
+        }
+
         $set      = clone $this;
         $set->map = $set->map->put($element, self::PLACEHOLDER);
 

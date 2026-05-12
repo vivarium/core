@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,58 +12,61 @@ namespace Vivarium\Assertion\Conditional;
 
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Helpers\TypeToString;
 use Vivarium\Assertion\String\IsEmpty;
+use Vivarium\Type\Type;
 
-use function array_merge;
 use function sprintf;
 
 /**
- * @template T
- * @template-implements Assertion<T>
- * @psalm-immutable
+ * @template A
+ * @template B
+ * @template-implements Assertion<A|B>
  */
 final class Either implements Assertion
 {
-    /** @var array<Assertion<T>> */
-    private array $assertions;
-
     /**
-     * @param Assertion<T> $assertion
-     * @param Assertion<T> ...$assertions
+     * @param Assertion<A> $assertion1
+     * @param Assertion<B> $assertion2
      */
-    public function __construct(Assertion $assertion, Assertion ...$assertions)
-    {
-        $this->assertions = array_merge([$assertion], $assertions);
+    public function __construct(
+        private Assertion $assertion1,
+        private Assertion $assertion2,
+    ) {
     }
 
-    /**
-     * @param T $value
-     */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert A|B $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
                      $message : 'Failed all assertions in either condition.',
-                (new TypeToString())($value),
+                Type::toLiteral($value),
+                Type::toString($value),
             );
 
             throw new AssertionFailed($message);
         }
     }
 
-    /**
-     * @param T $value
-     */
-    public function __invoke($value): bool
+    /** @psalm-assert-if-true A|B $value */
+    public function __invoke(mixed $value): bool
     {
-        foreach ($this->assertions as $assertion) {
-            if ($assertion($value)) {
-                return true;
-            }
-        }
+        return $this->safeAssert($this->assertion1, $value) ||
+               $this->safeAssert($this->assertion2, $value);
+    }
 
-        return false;
+    /**
+     * @param Assertion<T> $assertion
+     *
+     * @template T
+     */
+    public function safeAssert(Assertion $assertion, mixed $value): bool
+    {
+        try {
+            return $assertion($value);
+        } catch (AssertionFailed) {
+            return false;
+        }
     }
 }

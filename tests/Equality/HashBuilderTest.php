@@ -2,33 +2,30 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
 
-namespace Vivarium\Equality\Test;
+namespace Vivarium\Test\Equality;
 
 use PHPUnit\Framework\TestCase;
 use stdClass;
 use Vivarium\Equality\Equality;
 use Vivarium\Equality\HashBuilder;
+use Vivarium\Test\Equality\Stub\EqualityStub;
 
-/**
- * @coversDefaultClass \Vivarium\Equality\HashBuilder
- */
+/** @coversDefaultClass \Vivarium\Equality\HashBuilder */
 final class HashBuilderTest extends TestCase
 {
     /**
-     * @param mixed $value
-     *
      * @covers ::__construct
      * @covers ::append
      * @covers ::getHashCode
      * @dataProvider getTestAppendPrimitiveData
      */
-    public function testAppendPrimitive($value, string $expected): void
+    public function testAppendPrimitive(mixed $value, string $expected): void
     {
         $builder = new HashBuilder();
         $builder = $builder->append($value);
@@ -65,13 +62,11 @@ final class HashBuilderTest extends TestCase
     }
 
     /**
-     * @param mixed $element
-     *
      * @covers ::append
      * @covers ::appendCallable
      * @dataProvider getClonePointData
      */
-    public function testImmutability($element): void
+    public function testImmutability(mixed $element): void
     {
         $builder  = new HashBuilder();
         $builder1 = $builder->append($element);
@@ -79,10 +74,8 @@ final class HashBuilderTest extends TestCase
         static::assertNotSame($builder, $builder1);
     }
 
-    /**
-     * @return array<array-key, array{0: scalar|null, 1: string}>
-     */
-    public function getTestAppendPrimitiveData(): array
+    /** @return array<array-key, array{0: scalar|null, 1: string}> */
+    public static function getTestAppendPrimitiveData(): array
     {
         return [
             'Integer Hash' => [
@@ -104,20 +97,12 @@ final class HashBuilderTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<array-key, array{0: object, 1: string}>
-     */
-    public function getTestAppendObjectData(): array
+    /** @return array<array-key, array{0: object, 1: string}> */
+    public static function getTestAppendObjectData(): array
     {
         $stdClass      = new stdClass();
         $stdClass->foo = 42;
         $stdClass->bar = 'baz';
-
-        $equality = $this->createMock(Equality::class);
-        $equality
-            ->expects(static::once())
-            ->method('hash')
-            ->willReturn('79169da20d8365b605a4d0802300cb30019eec9f');
 
         return [
             'Object without EqualityInterface' => [
@@ -125,16 +110,21 @@ final class HashBuilderTest extends TestCase
                 'a555f265bb7cf041fa3e8611ee4b3bb9087c44b7',
             ],
             'Object with EqualityInterface' => [
-                $equality,
-                '061dcb8bab856f8eb86506be2d4d9dfec34f9948',
+                new EqualityStub(),
+                'dfd1a10ea192b37227629fb5af0d3a8f27af226a',
             ],
         ];
     }
 
     /**
-     * @return array{0: array{0: array<int>, 1: string}, 1: array{0: array<object>, 1: string}}
+     * @return array{
+     *     0: array{0: array<int>, 1: string},
+     *     1: array{0: array<object>, 1: string},
+     *     2: array{0: array<string, int>, 1:string},
+     *     3: array{0: array<string, int|array<string|array<int, string>>>, 1:string}
+     * }
      */
-    public function getTestAppendEachData(): array
+    public static function getTestAppendEachData(): array
     {
         $stdClass      = new stdClass();
         $stdClass->foo = 42;
@@ -153,27 +143,33 @@ final class HashBuilderTest extends TestCase
                 '381ba48afb9497d12392200c7ba6d2eafd82e77e',
             ],
             [
-                ['a' => 1, 'b' => 2, 'c' => ['a', 'b', 'c' => [3 => 'c']]],
+                [
+                    'a' => 1,
+                    'b' => 2,
+                    'c' => [
+                        0 => 'a',
+                        1 => 'b',
+                        'c' => [3 => 'c'],
+                    ],
+                ],
                 '9356b8b9c963674063a6d422c8b21eeccd890148',
             ],
         ];
     }
 
-    /**
-     * @return array{0: array<int>, 1: array<float>, 2: array<Equality>, 3: array{empty?: int}, 4: array<callable>}
+    /** @return array{
+     *     0: array<int>,
+     *     1: array<float>,
+     *     2: array<Equality>,
+     *     3: array<callable>
+     * }
      */
-    public function getClonePointData(): array
+    public static function getClonePointData(): array
     {
-        $equality = $this->createMock(Equality::class);
-        $equality->method('hash');
-
         return [
             [ 1 ],
             [  0.5 ],
-            [ $equality ],
-            [
-                [],
-            ],
+            [ new EqualityStub() ],
             [
                 static function (): int {
                     return 1 + 1;

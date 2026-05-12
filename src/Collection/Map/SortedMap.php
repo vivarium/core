@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -27,24 +27,19 @@ use function count;
  * @template K
  * @template V
  * @template-implements Map<K, V>
- * @psalm-immutable
  */
 class SortedMap implements Map
 {
     /** @var array<int, Pair<K, V>> */
     private array $pairs;
 
-    /** @var Comparator<K> */
-    private Comparator $comparator;
-
     /**
      * @param Comparator<K> $comparator
      * @param Pair<K, V>    ...$pairs
      */
-    public function __construct(Comparator $comparator, Pair ...$pairs)
+    public function __construct(private Comparator $comparator, Pair ...$pairs)
     {
-        $this->comparator = $comparator;
-        $this->pairs      = [];
+        $this->pairs = [];
 
         foreach ($pairs as $pair) {
             $this->pairs = Vector::putInPlace(
@@ -237,7 +232,10 @@ class SortedMap implements Map
     /** @return SearchAlgorithm<Pair<K, V>, Pair<K, V>> */
     private function searchByPair(): SearchAlgorithm
     {
-        return new BinarySearch(
+        //FIXME Same as HashMap.php
+
+        /** @var callable(Pair<K,V>, Pair<K,V>):int $comparator */
+        $comparator =
             /**
              * @param Pair<K, V> $pair1
              * @param Pair<K, V> $pair2
@@ -247,14 +245,18 @@ class SortedMap implements Map
                     $pair1->getKey(),
                     $pair2->getKey(),
                 );
-            },
-        );
+            };
+
+        return new BinarySearch($comparator);
     }
 
     /** @return SearchAlgorithm<Pair<K, V>, K> */
     private function searchByKey(): SearchAlgorithm
     {
-        return new BinarySearch(
+        //FIXME Same as HashMap.php
+
+        /** @var callable(Pair<K, V>, K):int $comparator */
+        $comparator =
             /**
              * @param Pair<K, V> $pair
              * @param K          $key
@@ -264,7 +266,8 @@ class SortedMap implements Map
                     $pair->getKey(),
                     $key,
                 );
-            },
-        );
+            };
+
+        return new BinarySearch($comparator);
     }
 }

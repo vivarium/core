@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,54 +14,88 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Exception\AssertionFailed;
 use Vivarium\Assertion\Numeric\IsOutOfOpenRange;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\Numeric\IsOutOfOpenRange
- */
+/** @coversDefaultClass \Vivarium\Assertion\Numeric\IsOutOfOpenRange */
 final class IsOutOfOpenRangeTest extends TestCase
 {
     /**
      * @covers ::__construct()
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
      */
-    public function testAssert(): void
+    public function testAssert(int|float $number, int|float $min, int|float $max): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be out of open range (0, 9). Got 8.');
+        static::expectNotToPerformAssertions();
 
-        (new IsOutOfOpenRange(0, 9))->assert(-42);
-        (new IsOutOfOpenRange(0, 9))->assert(0);
-        (new IsOutOfOpenRange(0, 9))->assert(9);
-        (new IsOutOfOpenRange(0, 9))->assert(42);
-        (new IsOutOfOpenRange(0, 9))->assert(8);
+        (new IsOutOfOpenRange($min, $max))
+        ->assert($number);
     }
 
     /**
+     * @covers ::__construct()
      * @covers ::assert()
+     * @dataProvider provideFailure()
+     * @dataProvider provideInvalid()
      */
-    public function testAssertWithWrongRange(): void
+    public function testAssertException(int|float|string $number, int|float $min, int|float $max, string $message): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Lower bound must be lower than upper bound. Got (10, 0).');
+        static::expectExceptionMessage($message);
 
-        (new IsOutOfOpenRange(10, 0))->assert(5);
+        (new IsOutOfOpenRange($min, $max))
+            ->assert($number);
     }
 
     /**
-     * @covers ::assert()
+     * @covers ::__construct()
      * @covers ::__invoke()
+     * @dataProvider provideSuccess()
      */
-    public function testAssertWithoutNumeric(): void
+    public function testInvoke(int|float $number, int|float $min, int|float $max): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be either integer or float. Got "String".');
+        static::assertTrue(
+            (new IsOutOfOpenRange($min, $max))($number),
+        );
+    }
 
-        /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
-         */
-        (new IsOutOfOpenRange(0, 10))->assert('String');
+    /**
+     * @covers ::__construct()
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     */
+    public function testInvokeFailure(int|float $number, int|float $min, int|float $max): void
+    {
+        static::assertFalse(
+            (new IsOutOfOpenRange($min, $max))($number),
+        );
+    }
+
+    /** @return array<array<int|float>> */
+    public static function provideSuccess(): array
+    {
+        return [
+            [9, 0, 9],
+            [0, 0, 9],
+            [42, 0, 9],
+        ];
+    }
+
+    /** @return array<array{0:int|float, 1:int|float, 2:int|float, 3:string}> */
+    public static function provideFailure(): array
+    {
+        return [
+            [5, 0, 9, 'Expected number to be out of open range (0, 9). Got 5.'],
+            [1, 0, 9, 'Expected number to be out of open range (0, 9). Got 1.'],
+            [8, 0, 9, 'Expected number to be out of open range (0, 9). Got 8.'],
+            [8.999, 0, 9, 'Expected number to be out of open range (0, 9). Got 8.999.'],
+        ];
+    }
+
+    /** @return array<array{0:int|float|string, 1:int|float, 2:int|float, 3:string}> */
+    public static function provideInvalid(): array
+    {
+        return [
+            [11, 10, 0, 'Lower bound must be lower than upper bound. Got (10, 0).'],
+            ['String', 0, 10, 'Expected value to be either integer or float. Got string.'],
+        ];
     }
 }

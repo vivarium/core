@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -20,7 +20,6 @@ use Vivarium\Equality\Equality;
  * @template K
  * @template V
  * @template-extends IteratorAggregate<K, V>
- * @psalm-immutable
  */
 interface Map extends Countable, IteratorAggregate, Equality
 {

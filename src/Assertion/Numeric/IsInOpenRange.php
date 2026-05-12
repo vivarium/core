@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,57 +12,49 @@ namespace Vivarium\Assertion\Numeric;
 
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Helpers\TypeToString;
 use Vivarium\Assertion\String\IsEmpty;
-use Vivarium\Assertion\Type\IsNumeric;
+use Vivarium\Assertion\Var\IsNumeric;
+use Vivarium\Type\Type;
 
 use function sprintf;
 
 /**
- * @template-implements Assertion<int|float>
- * @psalm-immutable
+ * @template T as int|float
+ * @template-implements Assertion<T>
  */
 final class IsInOpenRange implements Assertion
 {
-    /** @var int|float */
-    private $min;
-
-    /** @var int|float */
-    private $max;
-
     /**
-     * @param int|float $min
-     * @param int|float $max
+     * @param T $min
+     * @param T $max
      */
-    public function __construct($min, $max)
+    public function __construct(private $min, private $max)
     {
         (new IsLessThan($max))
             ->assert($min, 'Lower bound must be lower than upper bound. Got (%1$s, %2$s).');
-
-        $this->min = $min;
-        $this->max = $max;
     }
 
-    /** @param int|float $value */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert T $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
                      $message : 'Expected number to be in open range (%2$s, %3$s). Got %s.',
-                (new TypeToString())($value),
-                (new TypeToString())($this->min),
-                (new TypeToString())($this->max),
+                Type::toLiteral($value),
+                Type::toLiteral($this->min),
+                Type::toLiteral($this->max),
             );
 
             throw new AssertionFailed($message);
         }
     }
 
-    /** @param int|float $value */
-    public function __invoke($value): bool
+    /** @psalm-assert T $value */
+    public function __invoke(mixed $value): bool
     {
-        (new IsNumeric())->assert($value);
+        (new IsNumeric())
+            ->assert($value);
 
         return ($this->min < $value) && ($value < $this->max);
     }

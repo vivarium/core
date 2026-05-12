@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -21,9 +21,7 @@ use Vivarium\Comparator\StringComparator;
 use function count;
 use function usort;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Map\SortedMap
- */
+/** @coversDefaultClass \Vivarium\Collection\Map\SortedMap */
 class SortedMapTest extends TestCase
 {
     /**
@@ -89,9 +87,7 @@ class SortedMapTest extends TestCase
         static::assertNotSame($map, $map->put('z', 42));
     }
 
-    /**
-     * @covers ::keys
-     */
+    /** @covers ::keys */
     public function testKeySorting(): void
     {
         $map = new SortedMap(new StringComparator());
@@ -122,9 +118,7 @@ class SortedMapTest extends TestCase
         static::assertEquals('b', $map->get(1));
     }
 
-    /**
-     * @covers ::get()
-     */
+    /** @covers ::get() */
     public function testGetNotFound(): void
     {
         static::expectException(OutOfBoundsException::class);
@@ -180,9 +174,7 @@ class SortedMapTest extends TestCase
         static::assertTrue($map->containsKey(1));
     }
 
-    /**
-     * @covers ::pairs()
-     */
+    /** @covers ::pairs() */
     public function testPairs(): void
     {
         /** @var int[] $keys */
@@ -200,9 +192,7 @@ class SortedMapTest extends TestCase
         }
     }
 
-    /**
-     * @covers ::clear()
-     */
+    /** @covers ::clear() */
     public function testClear(): void
     {
         /** @var int[] $keys */
@@ -216,9 +206,7 @@ class SortedMapTest extends TestCase
         static::assertCount(0, $map);
     }
 
-    /**
-     * @covers ::getIterator
-     */
+    /** @covers ::getIterator */
     public function testGetIterator(): void
     {
         /** @var string[] $keys */
@@ -242,9 +230,7 @@ class SortedMapTest extends TestCase
         }
     }
 
-    /**
-     * @covers ::containsValue()
-     */
+    /** @covers ::containsValue() */
     public function testContainsValue(): void
     {
         /** @var int[] $keys */
@@ -257,9 +243,7 @@ class SortedMapTest extends TestCase
         static::assertFalse($map->containsValue('z'));
     }
 
-    /**
-     * @covers ::values()
-     */
+    /** @covers ::values() */
     public function testValues(): void
     {
         /** @var int[] $keys */
@@ -271,9 +255,7 @@ class SortedMapTest extends TestCase
         static::assertSame(['a', 'b'], $map->values());
     }
 
-    /**
-     * @covers ::isEmpty()
-     */
+    /** @covers ::isEmpty() */
     public function testIsEmpty(): void
     {
         $map = new SortedMap(new IntegerComparator());
@@ -281,9 +263,7 @@ class SortedMapTest extends TestCase
         static::assertTrue($map->isEmpty());
     }
 
-    /**
-     * @covers ::equals()
-     */
+    /** @covers ::equals() */
     public function testEquality(): void
     {
         /** @var int[] $keys */
@@ -305,9 +285,7 @@ class SortedMapTest extends TestCase
         static::assertFalse($map1->equals($map3));
     }
 
-    /**
-     * @covers ::hash()
-     */
+    /** @covers ::hash() */
     public function testHash(): void
     {
         /** @var int[] $keys */

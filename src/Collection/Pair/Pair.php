@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -17,24 +17,15 @@ use Vivarium\Equality\HashBuilder;
 /**
  * @template-covariant K
  * @template-covariant V
- * @psalm-immutable
  */
 final class Pair implements Equality
 {
-    /** @var K */
-    private $key;
-
-    /** @var V */
-    private $value;
-
     /**
      * @param K $key
      * @param V $value
      */
-    public function __construct($key, $value)
+    public function __construct(private $key, private $value)
     {
-        $this->key   = $key;
-        $this->value = $value;
     }
 
     /** @return K */

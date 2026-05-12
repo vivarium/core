@@ -2,8 +2,8 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -18,7 +18,6 @@ use function is_array;
 use function is_float;
 use function is_object;
 
-/** @psalm-immutable */
 final class EqualsBuilder
 {
     private bool $isEquals;

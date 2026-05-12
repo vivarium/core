@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -13,75 +13,53 @@ namespace Vivarium\Assertion\Object;
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Conditional\Either;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Helpers\TypeToString;
-use Vivarium\Assertion\String\IsClass;
 use Vivarium\Assertion\String\IsEmpty;
-use Vivarium\Assertion\String\IsInterface;
-use Vivarium\Assertion\Type\IsObject;
+use Vivarium\Assertion\Type\IsClass;
+use Vivarium\Assertion\Type\IsInterface;
+use Vivarium\Assertion\Var\IsObject;
+use Vivarium\Type\Type;
 
 use function sprintf;
 
 /**
  * @template T as object
- * @template-implements Assertion<object>
+ * @template-implements Assertion<T>
  */
 final class IsInstanceOf implements Assertion
 {
-    /** @var class-string<T> */
-    private string $class;
-
     /**
      * @param class-string<T> $class
      *
      * @throws AssertionFailed
-     *
-     * @psalm-mutation-free
      */
-    public function __construct(string $class)
+    public function __construct(private string $class)
     {
         (new Either(
             new IsClass(),
             new IsInterface(),
         ))->assert($class, 'Argument must be a class or interface name. Got %s');
-
-        $this->class = $class;
     }
 
-    /**
-     * @param object $value
-     *
-     * @throws AssertionFailed
-     *
-     * @psalm-assert T $value
-     *
-     * @psalm-mutation-free
-     */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert T $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
                      $message : 'Expected object to be instance of %2$s. Got %s.',
-                (new TypeToString())($value),
-                (new TypeToString())($this->class),
+                Type::toLiteral($value),
+                Type::toLiteral($this->class),
             );
 
             throw new AssertionFailed($message);
         }
     }
 
-    /**
-     * @param object $value
-     *
-     * @throws AssertionFailed
-     *
-     * @psalm-assert-if-true T $value
-     *
-     * @psalm-mutation-free
-     */
-    public function __invoke($value): bool
+    /** @psalm-assert-if-true T $value */
+    public function __invoke(mixed $value): bool
     {
-        (new IsObject())->assert($value);
+        (new IsObject())
+            ->assert($value);
 
         return $value instanceof $this->class;
     }

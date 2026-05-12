@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -20,32 +20,26 @@ use function usort;
 /**
  * @template T
  * @template-implements Queue<T>
- * @psalm-immutable
  */
 final class PriorityQueue implements Queue
 {
     /** @var ArrayQueue<T> */
     private ArrayQueue $queue;
 
-    /** @var Comparator<T> */
-    private Comparator $comparator;
-
     /**
      * @param Comparator<T> $comparator
      * @param T             ...$elements
      */
-    public function __construct(Comparator $comparator, ...$elements)
+    public function __construct(private Comparator $comparator, ...$elements)
     {
-        $this->comparator = $comparator;
-
         usort($elements, $comparator);
 
         $this->queue = new ArrayQueue(...$elements);
     }
 
     /**
-     * @param Comparator<K>       $comparator
-     * @param array<array-key, K> $elements
+     * @param Comparator<K> $comparator
+     * @param array<K>      $elements
      *
      * @return PriorityQueue<K>
      *

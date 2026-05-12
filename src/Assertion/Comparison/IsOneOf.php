@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,60 +12,47 @@ namespace Vivarium\Assertion\Comparison;
 
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Helpers\TypeToString;
 use Vivarium\Assertion\String\IsEmpty;
 use Vivarium\Equality\EqualsBuilder;
+use Vivarium\Type\Type;
 
-use function array_merge;
 use function is_object;
 use function sprintf;
 
 /**
  * @template T
  * @template-implements Assertion<T>
- * @psalm-immutable
  */
 final class IsOneOf implements Assertion
 {
-    /** @var array<T> */
-    private array $choices;
-
-    /**
-     * @param T $choice
-     * @param T ...$choices
-     */
-    public function __construct($choice, ...$choices)
+    /** @param array<T> $choices */
+    public function __construct(private array $choices)
     {
-        $this->choices = array_merge([$choice], $choices);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @psalm-assert T $value
-     */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert T $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
                     $message : 'Expected value to be one of the values provided. Got %s.',
-                is_object($value) ? 'different object' : (new TypeToString())($value),
+                is_object($value) ? 'different object' : Type::toLiteral($value),
             );
 
             throw new AssertionFailed($message);
         }
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @psalm-assert-if-true T $value
-     */
-    public function __invoke($value): bool
+    /** @psalm-assert-if-true T $value */
+    public function __invoke(mixed $value): bool
     {
         foreach ($this->choices as $choice) {
-            if ((new EqualsBuilder())->append($value, $choice)->isEquals()) {
+            if (
+                (new EqualsBuilder())
+                ->append($value, $choice)
+                ->isEquals()
+            ) {
                 return true;
             }
         }

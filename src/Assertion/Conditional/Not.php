@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,8 +12,8 @@ namespace Vivarium\Assertion\Conditional;
 
 use Vivarium\Assertion\Assertion;
 use Vivarium\Assertion\Exception\AssertionFailed;
-use Vivarium\Assertion\Helpers\TypeToString;
 use Vivarium\Assertion\String\IsEmpty;
+use Vivarium\Type\Type;
 
 use function get_class;
 use function sprintf;
@@ -21,36 +21,31 @@ use function sprintf;
 /**
  * @template T
  * @template-implements Assertion<T>
- * @psalm-immutable
  */
 final class Not implements Assertion
 {
-    /** @var Assertion<T> */
-    private Assertion $assertion;
-
     /** @param Assertion<T> $assertion */
-    public function __construct(Assertion $assertion)
+    public function __construct(private Assertion $assertion)
     {
-        $this->assertion = $assertion;
     }
 
-    /** @param T $value */
-    public function assert($value, string $message = ''): void
+    /** @psalm-assert !T $value */
+    public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
             $message = sprintf(
                 ! (new IsEmpty())($message) ?
                      $message : 'Failed negating the assertion %2$s with value %s.',
-                (new TypeToString())($value),
-                (new TypeToString())(get_class($this->assertion)),
+                Type::toLiteral($value),
+                Type::toLiteral(get_class($this->assertion)),
             );
 
             throw new AssertionFailed($message);
         }
     }
 
-    /** @param T $value */
-    public function __invoke($value): bool
+    /** @psalm-assert-if-true !T $value */
+    public function __invoke(mixed $value): bool
     {
         return ! ($this->assertion)($value);
     }

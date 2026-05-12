@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -17,9 +17,7 @@ use Vivarium\Collection\Sequence\ArraySequence;
 use function count;
 use function sprintf;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Sequence\ArraySequence
- */
+/** @coversDefaultClass \Vivarium\Collection\Sequence\ArraySequence */
 class ArraySequenceExceptionTest extends TestCase
 {
     /**
@@ -76,10 +74,8 @@ class ArraySequenceExceptionTest extends TestCase
         $list->removeAtIndex($index);
     }
 
-    /**
-     * @return array<string, array{0: array<int, int>, 1: int}>
-     */
-    public function getTestIndexOutOfBoundData(): array
+    /** @return array<string, array{0: array<int, int>, 1: int}> */
+    public static function getTestIndexOutOfBoundData(): array
     {
         return [
             'Empty List lower bound' =>

@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,9 +14,7 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Boolean\IsTrue;
 use Vivarium\Assertion\Exception\AssertionFailed;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\Boolean\IsTrue
- */
+/** @coversDefaultClass \Vivarium\Assertion\Boolean\IsTrue */
 final class IsTrueTest extends TestCase
 {
     /**
@@ -25,11 +23,23 @@ final class IsTrueTest extends TestCase
      */
     public function testAssert(): void
     {
+        static::expectNotToPerformAssertions();
+
+        (new IsTrue())
+            ->assert(true);
+    }
+
+    /**
+     * @covers ::assert()
+     * @covers ::__invoke()
+     */
+    public function testAssertException(): void
+    {
         static::expectException(AssertionFailed::class);
         static::expectExceptionMessage('Expected boolean to be true. Got false.');
 
-        (new IsTrue())->assert(true);
-        (new IsTrue())->assert(false);
+        (new IsTrue())
+            ->assert(false);
     }
 
     /**
@@ -39,14 +49,9 @@ final class IsTrueTest extends TestCase
     public function testAssertWithoutBoolean(): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be boolean. Got integer.');
+        static::expectExceptionMessage('Expected value to be boolean. Got int.');
 
-        /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
-         */
-        (new IsTrue())->assert(42);
+        (new IsTrue())
+            ->assert(42);
     }
 }

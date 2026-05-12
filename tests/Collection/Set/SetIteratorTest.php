@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,12 +12,10 @@ namespace Vivarium\Test\Collection\Set;
 
 use Vivarium\Collection\Pair\Pair;
 use Vivarium\Collection\Set\SetIterator;
-use Vivarium\Test\Collection\Iterator\CommonIteratorTest;
+use Vivarium\Test\Collection\Iterator\IteratorTestCase;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Set\SetIterator
- */
-class SetIteratorTest extends CommonIteratorTest
+/** @coversDefaultClass \Vivarium\Collection\Set\SetIterator */
+class SetIteratorTest extends IteratorTestCase
 {
     /**
      * @covers ::__construct()

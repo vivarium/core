@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -14,40 +14,78 @@ use PHPUnit\Framework\TestCase;
 use Vivarium\Assertion\Encoding\IsEncoding;
 use Vivarium\Assertion\Exception\AssertionFailed;
 
-/**
- * @coversDefaultClass \Vivarium\Assertion\Encoding\IsEncoding
- */
+/** @coversDefaultClass \Vivarium\Assertion\Encoding\IsEncoding */
 final class IsEncodingTest extends TestCase
 {
     /**
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
      */
-    public function testAssert(): void
+    public function testAssert(string $encoding): void
     {
-        static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('"Windows-1251" is not a valid encoding.');
+        static::expectNotToPerformAssertions();
 
-        (new IsEncoding())->assert('UTF-8');
-        (new IsEncoding())('UTF-8');
-        (new IsEncoding())->assert('Windows-1251');
+        (new IsEncoding())->assert($encoding);
     }
 
     /**
      * @covers ::assert()
-     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     * @dataProvider provideInvalid()
      */
-    public function testAssertWithoutString(): void
+    public function testAssertException(string|int $encoding, string $message): void
     {
         static::expectException(AssertionFailed::class);
-        static::expectExceptionMessage('Expected value to be string. Got integer.');
+        static::expectExceptionMessage($message);
 
-        /**
-         * This is covered by static analysis but it is a valid runtime call
-         *
-         * @psalm-suppress InvalidScalarArgument
-         * @phpstan-ignore-next-line
-         */
-        (new IsEncoding())->assert(42);
+        (new IsEncoding())->assert($encoding);
+    }
+
+    /**
+     * @covers ::__invoke()
+     * @dataProvider provideSuccess()
+     */
+    public function testInvoke(string $encoding): void
+    {
+        static::assertTrue(
+            (new IsEncoding())($encoding),
+        );
+    }
+
+    /**
+     * @covers ::__invoke()
+     * @dataProvider provideFailure()
+     */
+    public function testInvokeFailure(string|int $encoding): void
+    {
+        static::assertFalse(
+            (new IsEncoding())($encoding),
+        );
+    }
+
+    /** @return array<array<string>> */
+    public static function provideSuccess(): array
+    {
+        return [
+            ['UTF-8'],
+            ['UTF-32'],
+            ['ASCII'],
+        ];
+    }
+
+    /** @return array<array<string>> */
+    public static function provideFailure(): array
+    {
+        return [
+            ['Windows-1251', '"Windows-1251" is not a valid encoding.'],
+        ];
+    }
+
+    /** @return array<array{0:int, 1:string}> */
+    public static function provideInvalid(): array
+    {
+        return [
+            [42, 'Expected value to be string. Got int.'],
+        ];
     }
 }

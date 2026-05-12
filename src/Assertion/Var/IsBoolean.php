@@ -1,0 +1,44 @@
+<?php
+
+/*
+ * This file is part of Vivarium
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
+ */
+
+declare(strict_types=1);
+
+namespace Vivarium\Assertion\Var;
+
+use Vivarium\Assertion\Assertion;
+use Vivarium\Assertion\Exception\AssertionFailed;
+use Vivarium\Assertion\String\IsEmpty;
+use Vivarium\Type\Type;
+
+use function is_bool;
+use function sprintf;
+
+/** @template-implements Assertion<bool> */
+final class IsBoolean implements Assertion
+{
+    /** @psalm-assert bool $value */
+    public function assert(mixed $value, string $message = ''): void
+    {
+        if (! $this($value)) {
+            $message = sprintf(
+                ! (new IsEmpty())($message) ?
+                     $message : 'Expected value to be boolean. Got %2$s.',
+                Type::toLiteral($value),
+                Type::toString($value),
+            );
+
+            throw new AssertionFailed($message);
+        }
+    }
+
+    /** @psalm-assert-if-true bool $value */
+    public function __invoke(mixed $value): bool
+    {
+        return is_bool($value);
+    }
+}

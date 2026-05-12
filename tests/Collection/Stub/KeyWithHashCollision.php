@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Collection\Stub;
@@ -14,16 +14,10 @@ use Vivarium\Equality\Equality;
 use Vivarium\Equality\EqualsBuilder;
 use Vivarium\Equality\HashBuilder;
 
-/**
- * @psalm-immutable
- */
 final class KeyWithHashCollision implements Equality
 {
-    private int $n;
-
-    public function __construct(int $n)
+    public function __construct(private int $n)
     {
-        $this->n = $n;
     }
 
     public function equals(object $object): bool

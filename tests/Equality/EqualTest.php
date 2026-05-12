@@ -2,35 +2,29 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2020 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
 
-namespace Vivarium\Equality\Test;
+namespace Vivarium\Test\Equality;
 
 use PHPUnit\Framework\TestCase;
 use Vivarium\Equality\Equal;
 use Vivarium\Equality\Equality;
 
-/**
- * @coversDefaultClass \Vivarium\Equality\Equal
- */
+/** @coversDefaultClass \Vivarium\Equality\Equal */
 final class EqualTest extends TestCase
 {
-    /**
-     * @covers ::areEquals()
-     */
+    /** @covers ::areEquals() */
     public function testAreEquals(): void
     {
         static::assertTrue(Equal::areEquals(42, 42));
         static::assertTrue(Equal::areEquals('z', 'z'));
     }
 
-    /**
-     * @covers ::hash()
-     */
+    /** @covers ::hash() */
     public function testHash(): void
     {
         $equality = $this->createMock(Equality::class);

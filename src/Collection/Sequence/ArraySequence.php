@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -27,7 +27,6 @@ use function usort;
 /**
  * @template T
  * @template-implements Sequence<T>
- * @psalm-immutable
  */
 final class ArraySequence implements Sequence
 {
@@ -45,7 +44,7 @@ final class ArraySequence implements Sequence
     }
 
     /**
-     * @param array<int, T0> $elements
+     * @param array<T0> $elements
      *
      * @return ArraySequence<T0>
      *
@@ -53,7 +52,7 @@ final class ArraySequence implements Sequence
      */
     public static function fromArray(array $elements): ArraySequence
     {
-        return new ArraySequence(...$elements);
+        return new ArraySequence(...array_values($elements));
     }
 
     /**
@@ -210,7 +209,6 @@ final class ArraySequence implements Sequence
             ->getHashCode();
     }
 
-    /** @psalm-assert int $index */
     private function checkBounds(int $index): void
     {
         if ($index < 0 || $index >= $this->count()) {

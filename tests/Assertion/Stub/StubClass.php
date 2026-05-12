@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,8 +12,26 @@ namespace Vivarium\Test\Assertion\Stub;
 
 class StubClass implements Stub
 {
+    public int $prop = 42;
+
+    protected int $protectedProp = 42;
+
+    private int $privateProp = 42;
+
     public function __toString(): string
     {
         return 'StubClass';
+    }
+
+    public function publicMethod(): void
+    {
+    }
+
+    protected function protectedMethod(): void
+    {
+    }
+
+    private function privateMethod(): void
+    {
     }
 }

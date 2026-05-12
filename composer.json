@@ -1,29 +1,30 @@
 {
-    "name": "vivarium/framework",
+    "name": "vivarium/core",
+    "description": "The Vivarium core plugin",
     "type": "library",
-    "license": "MIT",
+    "license": "MPL-2.0",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "authors": [
         {
             "name": "Luca Cantoreggi",
-            "email": "luca@cn7r66.com"
+            "email": "luca.cantoreggi@vivarium.cloud"
         }
     ],
     "require": {
-        "php": ">=7.4",
-        "ext-mbstring": "*"
+        "php": ">=8.1",
+        "ext-mbstring": "*",
+        "psr/container": "^2.0"
     },
     "require-dev": {
-        "doctrine/coding-standard": "^10.0",
-        "infection/infection": "^0.26",
+        "doctrine/coding-standard": "^14.0",
+        "infection/infection": "^0.27",
         "phpmd/phpmd": "^2.0",
         "phpstan/phpstan": "^1.0",
         "phpstan/phpstan-strict-rules": "^1.0",
-        "phpunit/phpunit": "^9.3",
+        "phpunit/phpunit": "^10.0",
         "psalm/plugin-phpunit": "^0.18",
-        "sebastian/phpcpd": "^6.0",
-        "vimeo/psalm": "^4.0"
+        "vimeo/psalm": "^5.0"
     },
     "autoload": {
         "psr-4": {
@@ -35,11 +36,22 @@
             "Vivarium\\Test\\": "tests/"
         }
     },
+    "replace": {
+        "vivarium/assertion": "self.version",
+        "vivarium/check": "self.version",
+        "vivarium/collection": "self.version",
+        "vivarium/comparator": "self.version",
+        "vivarium/container": "self.version",
+        "vivarium/dispatcher": "self.version",
+        "vivarium/equality": "self.version",
+        "vivarium/float": "self.version",
+        "vivarium/type": "self.version"
+    },
     "scripts": {
-        "infection": "vendor/bin/infection --coverage=tests-results/phpunit --min-msi=80 --min-covered-msi=85 --threads=4",
+        "infection": "vendor/bin/infection --coverage=tests-results/phpunit --min-msi=85 --min-covered-msi=95 --threads=4",
         "phpcs":     "vendor/bin/phpcs --report=junit --report-file=tests-results/phpcs/phpcs.xml --cache=cache/phpcs/result.cache src tests",
         "psalm":     "vendor/bin/psalm --output-format=checkstyle > tests-results/psalm/psalm.xml",
-        "phpmd":     "vendor/bin/phpmd src xml phpmd.xml --ignore-violations-on-exit --report-file tests-results/phpmd/phpmd.xml",
+        "phpmd":     "vendor/bin/phpmd src xml phpmd.xml --report-file tests-results/phpmd/phpmd.xml",
         "phpstan":   "vendor/bin/phpstan analyse --no-ansi --error-format=checkstyle > tests-results/phpstan/phpstan.xml",
         "phpunit":   "vendor/bin/phpunit",
 

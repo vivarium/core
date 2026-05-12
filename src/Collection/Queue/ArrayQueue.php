@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -19,25 +19,20 @@ use Vivarium\Equality\HashBuilder;
 /**
  * @template T
  * @template-implements Queue<T>
- * @psalm-immutable
  */
 final class ArrayQueue implements Queue
 {
     /** @var ArraySequence<T> */
     private ArraySequence $elements;
 
-    /**
-     * @param T ...$elements
-     *
-     * @no-named-arguments
-     */
+    /** @param T ...$elements */
     public function __construct(...$elements)
     {
         $this->elements = ArraySequence::fromArray($elements);
     }
 
     /**
-     * @param array<int, K> $elements
+     * @param array<K> $elements
      *
      * @return ArrayQueue<K>
      *

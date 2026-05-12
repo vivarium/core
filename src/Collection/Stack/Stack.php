@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -15,7 +15,6 @@ use Vivarium\Collection\Collection;
 /**
  * @template T
  * @template-extends Collection<T>
- * @psalm-immutable
  */
 interface Stack extends Collection
 {

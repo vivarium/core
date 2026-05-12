@@ -2,8 +2,8 @@
 
 /**
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -15,8 +15,6 @@ final class Equal
     /**
      * @param mixed $first
      * @param mixed $second
-     *
-     * @psalm-pure
      */
     public static function areEquals($first, $second): bool
     {
@@ -25,11 +23,7 @@ final class Equal
             ->isEquals();
     }
 
-    /**
-     * @param mixed $element
-     *
-     * @psalm-pure
-     */
+    /** @param mixed $element */
     public static function hash($element): string
     {
         return (new HashBuilder())

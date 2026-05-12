@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -19,9 +19,7 @@ use Vivarium\Comparator\StringComparator;
 use Vivarium\Equality\Equal;
 use Vivarium\Equality\Equality;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Set\SortedSet
- */
+/** @coversDefaultClass \Vivarium\Collection\Set\SortedSet */
 class SortedSetTest extends TestCase
 {
     /**
@@ -84,13 +82,12 @@ class SortedSetTest extends TestCase
         static::assertTrue($set->isEmpty());
     }
 
-    /**
-     * @covers ::getIterator()
-     */
+    /** @covers ::getIterator() */
     public function testGetIterator(): void
     {
-        /** @var int[] $values */
-        $values   = [3, 2, 1, 3, 1, 3];
+        /** @var array<int> $values */
+        $values = [3, 2, 1, 3, 1, 3];
+        /** @var array<int> $expected */
         $expected = [1, 2, 3];
 
         $set   = SortedSet::fromArray(new IntegerComparator(), $values);
@@ -101,9 +98,7 @@ class SortedSetTest extends TestCase
         }
     }
 
-    /**
-     * @covers ::contains()
-     */
+    /** @covers ::contains() */
     public function testContains(): void
     {
         /** @var string[] $values */
@@ -115,9 +110,7 @@ class SortedSetTest extends TestCase
         static::assertFalse($set->contains('z'));
     }
 
-    /**
-     * @covers ::contains()
-     */
+    /** @covers ::contains() */
     public function testContainsWithObjects(): void
     {
         $stub1 = $this->createMock(Equality::class);
@@ -227,9 +220,7 @@ class SortedSetTest extends TestCase
         static::assertEquals($expected, $set->toArray());
     }
 
-    /**
-     * @covers ::isSubsetOf()
-     */
+    /** @covers ::isSubsetOf() */
     public function testIsSubsetOf(): void
     {
         /** @var int[] $values1 */
@@ -246,9 +237,7 @@ class SortedSetTest extends TestCase
         static::assertFalse($set->isSubsetOf($subset));
     }
 
-    /**
-     * @covers ::union()
-     */
+    /** @covers ::union() */
     public function testUnionImmutability(): void
     {
         /** @var int[] $values */
@@ -262,9 +251,7 @@ class SortedSetTest extends TestCase
         static::assertNotSame($set, $set1);
     }
 
-    /**
-     * @covers ::fromArray()
-     */
+    /** @covers ::fromArray() */
     public function testFromArray(): void
     {
         /** @var int[] $values */
@@ -276,9 +263,7 @@ class SortedSetTest extends TestCase
         static::assertTrue(Equal::areEquals($set1, $set2));
     }
 
-    /**
-     * @covers ::equals()
-     */
+    /** @covers ::equals() */
     public function testEquals(): void
     {
         /** @var int[] $values1 */
@@ -298,9 +283,7 @@ class SortedSetTest extends TestCase
         static::assertFalse($set1->equals(new stdClass()));
     }
 
-    /**
-     * @covers ::hash()
-     */
+    /** @covers ::hash() */
     public function testHash(): void
     {
         /** @var int[] $values1 */

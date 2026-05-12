@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Dispatcher;
@@ -17,16 +17,9 @@ use Vivarium\Equality\HashBuilder;
 /** @template T as Event */
 final class ListenerAndPriority implements Equality
 {
-    /** @var EventListener<T> */
-    private EventListener $listener;
-
-    private int $priority;
-
     /** @param EventListener<T> $listener */
-    public function __construct(EventListener $listener, int $priority)
+    public function __construct(private EventListener $listener, private int $priority)
     {
-        $this->listener = $listener;
-        $this->priority = $priority;
     }
 
     /** @return EventListener<T> */
@@ -40,7 +33,6 @@ final class ListenerAndPriority implements Equality
         return $this->priority;
     }
 
-    /** @psalm-mutation-free */
     public function equals(object $object): bool
     {
         if (! $object instanceof ListenerAndPriority) {
@@ -57,7 +49,6 @@ final class ListenerAndPriority implements Equality
             ->isEquals();
     }
 
-    /** @psalm-mutation-free */
     public function hash(): string
     {
         return (new HashBuilder())

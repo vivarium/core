@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,18 +12,16 @@ namespace Vivarium\Test\Collection\Map;
 
 use Vivarium\Collection\Map\MapIterator;
 use Vivarium\Collection\Pair\Pair;
-use Vivarium\Test\Collection\Iterator\CommonIteratorTest;
+use Vivarium\Equality\HashBuilder;
+use Vivarium\Test\Collection\Iterator\IteratorTestCase;
 use Vivarium\Test\Collection\Stub\Key;
 use Vivarium\Test\Collection\Stub\KeyWithHashCollision;
-use Vivarium\Equality\HashBuilder;
 
 use function array_keys;
 use function array_values;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Map\MapIterator
- */
-class MapIteratorTest extends CommonIteratorTest
+/** @coversDefaultClass \Vivarium\Collection\Map\MapIterator */
+class MapIteratorTest extends IteratorTestCase
 {
     /**
      * @covers ::__construct()
@@ -93,7 +91,7 @@ class MapIteratorTest extends CommonIteratorTest
 
             $pair = new Pair(
                 $map($key),
-                $value
+                $value,
             );
 
             if (! isset($pairs[$hash])) {

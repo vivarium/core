@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 namespace Vivarium\Test\Collection\Util;
@@ -13,9 +13,7 @@ namespace Vivarium\Test\Collection\Util;
 use PHPUnit\Framework\TestCase;
 use Vivarium\Collection\Util\LinearSearch;
 
-/**
- * @coversDefaultClass \Vivarium\Collection\Util\LinearSearch
- */
+/** @coversDefaultClass \Vivarium\Collection\Util\LinearSearch */
 final class LinearSearchTest extends TestCase
 {
     /**

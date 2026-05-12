@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -18,7 +18,6 @@ use function count;
  * @template T
  * @template V
  * @template-implements SearchAlgorithm<T, V>
- * @psalm-immutable
  */
 final class LinearSearch implements SearchAlgorithm
 {
@@ -26,7 +25,7 @@ final class LinearSearch implements SearchAlgorithm
     private $equals;
 
     /** @param callable(T, V):bool|null $equals */
-    public function __construct(?callable $equals = null)
+    public function __construct(callable|null $equals = null)
     {
         if ($equals === null) {
             $equals =

@@ -2,8 +2,8 @@
 
 /*
  * This file is part of Vivarium
- * SPDX-License-Identifier: MIT
- * Copyright (c) 2021 Luca Cantoreggi
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) The Vivarium Project
  */
 
 declare(strict_types=1);
@@ -12,22 +12,16 @@ namespace Vivarium\Assertion;
 
 use Vivarium\Assertion\Exception\AssertionFailed;
 
-/** @template  T */
+/** @template-covariant T */
 interface Assertion
 {
     /**
-     * @param T $value
-     *
      * @throws AssertionFailed
      *
-     * @psalm-mutation-free
+     * @psalm-assert T $value
      */
-    public function assert($value, string $message = ''): void;
+    public function assert(mixed $value, string $message = ''): void;
 
-    /**
-     * @param T $value
-     *
-     * @psalm-mutation-free
-     */
-    public function __invoke($value): bool;
+    /** @psalm-assert-if-true T $value */
+    public function __invoke(mixed $value): bool;
 }
