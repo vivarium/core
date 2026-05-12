@@ -1,6 +1,6 @@
 {
-    "name": "vivarium/assertion",
-    "description": "Assertion library useful for catching defects during development.",
+    "name": "vivarium/collection",
+    "description": "Collection data structures for the Vivarium ecosystem.",
     "type": "library",
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -13,12 +13,13 @@
     ],
     "require": {
         "php": ">=8.1",
-        "ext-mbstring": "*",
+        "vivarium/assertion": "^0.1",
+        "vivarium/comparator": "^0.1",
         "vivarium/equality": "^0.1"
     },
     "autoload": {
         "psr-4": {
-            "Vivarium\\Assertion\\": "./"
+            "Vivarium\\Collection\\": "./"
         }
     }
 }
