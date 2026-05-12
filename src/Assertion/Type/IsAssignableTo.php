@@ -51,6 +51,10 @@ final class IsAssignableTo implements Assertion
     /** @return Assertion<non-empty-string>|Assertion<class-string> */
     private function getAssertion(string $type): Assertion
     {
+        if ((new IsNullable())($type)) {
+            return new IsAssignableToNullable($type);
+        }
+
         if ((new IsUnion())($type)) {
             return new IsAssignableToUnion($type);
         }

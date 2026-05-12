@@ -67,10 +67,10 @@ final class AllTest extends TestCase
     /** @covers ::__invoke() */
     public function testInvoke(): void
     {
-        $assertion = (new All(
+        $assertion = new All(
             new IsString(),
             new IsLongAtLeast(5),
-        ));
+        );
 
         static::assertTrue($assertion('Hello'));
     }
@@ -81,10 +81,10 @@ final class AllTest extends TestCase
      */
     public function testInvokeFail(): void
     {
-        $assertion = (new All(
+        $assertion = new All(
             new IsString(),
             new IsLongAtLeast(5),
-        ));
+        );
 
         static::assertFalse($assertion(7));
     }

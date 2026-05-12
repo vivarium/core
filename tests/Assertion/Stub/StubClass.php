@@ -14,8 +14,24 @@ class StubClass implements Stub
 {
     public int $prop = 42;
 
+    protected int $protectedProp = 42;
+
+    private int $privateProp = 42;
+
     public function __toString(): string
     {
         return 'StubClass';
+    }
+
+    public function publicMethod(): void
+    {
+    }
+
+    protected function protectedMethod(): void
+    {
+    }
+
+    private function privateMethod(): void
+    {
     }
 }

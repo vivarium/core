@@ -71,6 +71,12 @@ final class HasMethodTest extends TestCase
         return [
             [StubClass::class, '__toString'],
             [new StubClass(), '__toString'],
+            [StubClass::class, 'publicMethod'],
+            [new StubClass(), 'publicMethod'],
+            [StubClass::class, 'protectedMethod'],
+            [new StubClass(), 'protectedMethod'],
+            [StubClass::class, 'privateMethod'],
+            [new StubClass(), 'privateMethod'],
         ];
     }
 

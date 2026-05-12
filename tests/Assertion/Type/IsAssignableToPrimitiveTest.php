@@ -74,9 +74,13 @@ final class IsAssignableToPrimitiveTest extends TestCase
         return [
             ['int', 'float'],
             ['string', 'string'],
+            ['string', 'mixed'],
+            ['int', 'mixed'],
+            [StubClass::class, 'mixed'],
             [StubClass::class, 'string'],
             [StubClass::class, 'object'],
             [StubClassExtension::class, 'callable'],
+            ['callable', 'callable'],
         ];
     }
 

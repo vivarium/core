@@ -12,7 +12,6 @@ use Vivarium\Assertion\Type\IsClassOrInterface;
 use Vivarium\Assertion\Var\IsObject;
 use Vivarium\Type\Type;
 
-use function method_exists;
 use function sprintf;
 
 /** @template-implements Assertion<class-string|object> */
@@ -22,6 +21,7 @@ final class HasMethod implements Assertion
     {
     }
 
+    /** @psalm-assert class-string $value */
     public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
@@ -36,6 +36,7 @@ final class HasMethod implements Assertion
         }
     }
 
+    /** @psalm-assert-if-true class-string $value */
     public function __invoke(mixed $value): bool
     {
         (new Either(
@@ -43,6 +44,12 @@ final class HasMethod implements Assertion
             new IsObject(),
         ))->assert($value, 'Value must be either class, interface or object. Got %s');
 
-        return method_exists($value, $this->method);
+        return (new Either(
+            new HasPublicMethod($this->method),
+            new Either(
+                new HasProtectedMethod($this->method),
+                new HasPrivateMethod($this->method),
+            ),
+        ))($value);
     }
 }

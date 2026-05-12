@@ -80,6 +80,7 @@ final class IsAssignableToTest extends TestCase
         return array_merge(
             IsAssignableToClassTest::provideSuccess(),
             IsAssignableToIntersectionTest::provideSuccess(),
+            IsAssignableToNullableTest::provideSuccess(),
             IsAssignableToPrimitiveTest::provideSuccess(),
             IsAssignableToUnionTest::provideSuccess(),
         );
@@ -91,6 +92,7 @@ final class IsAssignableToTest extends TestCase
         return array_merge(
             IsAssignableToClassTest::provideFailure(),
             IsAssignableToIntersectionTest::provideFailure(),
+            IsAssignableToNullableTest::provideFailure(),
             IsAssignableToPrimitiveTest::provideFailure(),
             IsAssignableToUnionTest::provideFailure(),
         );

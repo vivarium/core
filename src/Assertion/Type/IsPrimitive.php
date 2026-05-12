@@ -23,7 +23,7 @@ use function sprintf;
 /** @template-implements Assertion<'int'|'float'|'string'|'array'|'callable'|'object'> */
 final class IsPrimitive implements Assertion
 {
-    /** @psalm-assert 'int'|'float'|'string'|'array'|'callable'|'object' $value */
+    /** @psalm-assert 'int'|'integer'|'float'|'string'|'array'|'callable'|'object' $value */
     public function assert(mixed $value, string $message = ''): void
     {
         if (! $this($value)) {
@@ -46,17 +46,6 @@ final class IsPrimitive implements Assertion
         (new IsString())
             ->assert($value);
 
-        return (new IsOneOf([
-            'int',
-            'integer',
-            'float',
-            'double',
-            'string',
-            'bool',
-            'boolean',
-            'array',
-            'callable',
-            'object',
-        ]))($value);
+        return (new IsOneOf(Type::expanded()))($value);
     }
 }

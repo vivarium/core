@@ -4,17 +4,17 @@
     "type": "library",
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "license": "MIT",
+    "license": "MPL-2.0",
     "authors": [
         {
             "name": "Luca Cantoreggi",
-            "email": "luca@cn7r66.com"
+            "email": "luca.cantoreggi@vivarium.cloud"
         }
     ],
     "require": {
-        "php" : "^7.4",
+        "php": ">=8.1",
         "ext-mbstring": "*",
-        "vivarium/equality" : "dev-main"
+        "vivarium/equality": "^0.1"
     },
     "autoload": {
         "psr-4": {

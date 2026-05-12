@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * This file is part of Vivarium
+ * SPDX-License-Identifier: MPL-2.0
+ * Copyright (c) 2026 Luca Cantoreggi
+ */
+
+namespace Vivarium\Container\Provider;
+
+use Vivarium\Collection\Set\HashSet;
+use Vivarium\Collection\Set\Set;
+use Vivarium\Container\Binding;
+use Vivarium\Container\Capability;
+use Vivarium\Container\Container;
+use Vivarium\Container\Provider;
+
+final class Fallback implements Provider
+{
+    public function __construct(
+        private Binding $primary,
+        private Binding $secondary,
+    ) {
+    }
+
+    public function provide(Container $container): mixed
+    {
+        return $container->has($this->primary)
+            ? $container->get($this->primary)
+            : $container->get($this->secondary);
+    }
+
+    public function getTarget(): string
+    {
+        return $this->primary->getType() . '|' . $this->secondary->getType();
+    }
+
+    public function getCapabilities(): Set
+    {
+        return HashSet::fromArray([
+            Capability::INJECTABLE,
+            Capability::DECORABLE,
+        ]);
+    }
+}
