@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Source checkout
         id: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         id: setup
@@ -36,7 +36,7 @@ jobs:
 
       - name: Restore Composer cache
         id: restore-composer-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: vendor
           key: ${{ runner.OS }}-${{ matrix.version }}-composer-${{ hashFiles('**/composer.json') }}
@@ -61,7 +61,7 @@ jobs:
 
       - name: Restore Tools cache
         id: restore-tools-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: cache
           key: ${{ runner.OS }}-${{ matrix.version }}-cache-${{ hashFiles('**/composer.json') }}
@@ -104,7 +104,7 @@ jobs:
         run: composer infection
 
       - name: Save Composer cache
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: >
           (success() || failure())
           && steps.composer.conclusion == 'success'
@@ -113,14 +113,14 @@ jobs:
           key: ${{ steps.restore-composer-cache.outputs.cache-primary-key }}
 
       - name: Save Tools cache
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         if: >
           (success() || failure())
         with:
           path: cache
           key: ${{ steps.restore-tools-cache.outputs.cache-primary-key }}
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         if: success() || failure()
         with:
           name: tests-results-${{ matrix.version }}
